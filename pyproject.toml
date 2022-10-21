@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "podscription"
+version = "0.1.0"
+description = ""
+authors = ["Zach Bellay <zachbellay@hotmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+scrapy = "^2.7.0"
+scrapy-playwright = "^0.0.22"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
