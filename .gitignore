@@ -1,3 +1,5 @@
+django/podscription-project/staticfiles
+django/data
 airflow/logs/
 
 # Airflow configuration

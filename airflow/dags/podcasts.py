@@ -3,28 +3,35 @@ import os
 from airflow.operators.python import PythonOperator
 from datetime import datetime
 from airflow import DAG
-import scrapy
 
-dag = DAG('scrapy_dag', description='Hello World DAG',
+dag = DAG('the_daily_podcast_dag', description='Hello World DAG',
           schedule_interval='0 12 * * *',
           start_date=datetime(2017, 3, 20), catchup=False)
 
 scrapy_task = BashOperator(
     task_id='scrapy',
-    bash_command='scrapy crawl example',
+    bash_command='scrapy crawl the-daily-podcast',
     cwd='scrapers',
     dag=dag,
 )
 
-# scrapy_task = BashOperator(
-#     task_id='scrapy',
-#     bash_command='ls /home/airflow/.local/bin',
-#     dag=dag,
-# )
-
-
-
 scrapy_task
+
+# convert the above code into a TaskFlow API pattern
+
+# from airflow.decorators import dag, task
+# from datetime import datetime
+
+# @dag(description='Hello World DAG', schedule_interval='0 12 * * *', start_date=datetime(2017, 3, 20), catchup=False)
+# def the_daily_podcast_dag():
+#     @task()
+#     def scrapy():
+#         return os.system('scrapy crawl the-daily-podcast')
+
+#     scrapy()
+
+# the_daily_podcast_dag = the_daily_podcast_dag()
+
 
 # from scrapy.crawler import CrawlerProcess
 # from scrapy.utils.project import get_project_settings

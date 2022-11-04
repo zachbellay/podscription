@@ -1,4 +1,5 @@
 import scrapy
+from scrapers.items import PodcastItem
 
 
 class ExampleSpider(scrapy.Spider):
@@ -7,4 +8,4 @@ class ExampleSpider(scrapy.Spider):
     start_urls = ['http://example.com/']
 
     def parse(self, response):
-        pass
+        return PodcastItem(name='The Daily', author='The New York Times', url='https://www.nytimes.com/column/the-daily')

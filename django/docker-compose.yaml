@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+  django:
+    restart: always
+    build:
+      context: .
+      dockerfile: docker/django/Dockerfile
+    depends_on:
+      - postgres
+    volumes:
+      - .:/usr/src/app
+    env_file:
+      - ../.env
+    networks:
+      - postgres
+    ports:
+      - "8888:8888"
+
+  postgres:
+    container_name: postgres_container
+    build: docker/postgres
+    environment:
+      POSTGRES_USER: ${DJANGO_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${DJANGO_DATABASE_PASSWORD}
+      POSTGRES_DB: ${DJANGO_POSTGRES_DB}
+      # PGDATA: /data/postgres
+    volumes:
+      - ./data/postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres
+    restart: unless-stopped
+    env_file:
+      - ../.env
+
+networks:
+  postgres:
+    driver: bridge
+
+volumes:
+  postgres:
+  pgadmin:
