@@ -7,18 +7,18 @@ services:
       context: .
       dockerfile: docker/django/Dockerfile
     depends_on:
-      - postgres
+      - django_postgres
     volumes:
       - .:/usr/src/app
     env_file:
       - ../.env
     networks:
-      - postgres
+      - django_postgres_network
     ports:
       - "8888:8888"
 
-  postgres:
-    container_name: postgres_container
+  django_postgres:
+    container_name: django_postgres
     build: docker/postgres
     environment:
       POSTGRES_USER: ${DJANGO_POSTGRES_USER}
@@ -30,15 +30,15 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - postgres
+      - django_postgres_network
     restart: unless-stopped
     env_file:
       - ../.env
 
 networks:
-  postgres:
+  django_postgres_network:
+    name: django_postgres_network
     driver: bridge
 
 volumes:
-  postgres:
-  pgadmin:
+  django_postgres:

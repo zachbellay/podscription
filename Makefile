@@ -8,10 +8,10 @@ build:
 
 up:
 	docker-compose -f django/docker-compose.yaml --env-file .env up -d
-	docker-compose -f airflow/docker-compose.airflow.yaml --env-file .env --profile flower up -d
+	docker-compose -f airflow/docker-compose.airflow.yaml --env-file .env up -d
 
 restart:
-	docker-compose -f airflow/docker-compose.airflow.yaml -f django/docker-compose.yaml --env-file .env restart
+	docker-compose -f airflow/docker-compose.airflow.yaml --env-file .env -f django/docker-compose.yaml --env-file .env restart
 
 down:
 	docker-compose -f airflow/docker-compose.airflow.yaml --env-file .env down
@@ -19,3 +19,5 @@ down:
 
 
 
+# docker-compose logs django/docker-compose.yaml
+# no configuration file provided: not found

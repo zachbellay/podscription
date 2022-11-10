@@ -30,10 +30,5 @@ FROM base as prod
 EXPOSE 8888
 RUN chmod +x ./docker/django/entry.sh
 
-
-
 # ENTRYPOINT tail -f /dev/null
 CMD ./docker/django/entry.sh
-
-
-# pg_isready -h postgres -p 5432 -U podscription_service_account

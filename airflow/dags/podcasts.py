@@ -4,7 +4,7 @@ from airflow.operators.python import PythonOperator
 from datetime import datetime
 from airflow import DAG
 
-dag = DAG('the_daily_podcast_dag', description='Hello World DAG',
+dag = DAG('the_daily_podcast_dag', description='Scrape The Daily Podcast from Google Podcast and transcribe it.',
           schedule_interval='0 12 * * *',
           start_date=datetime(2017, 3, 20), catchup=False)
 

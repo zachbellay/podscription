@@ -15,10 +15,4 @@ class PodcastEpisode(models.Model):
     description = models.TextField(null=False)
     audio_url = models.CharField(max_length=2048, null=False, blank=False)
     details_url = models.CharField(max_length=2048, null=False, blank=False)
-    transcibed = models.BooleanField(default=False)
-
-
-class PodcastTranscription(models.Model):
-    podcast_episode = models.ForeignKey(PodcastEpisode, on_delete=models.CASCADE)
-    text = models.TextField(null=False)
-    
+    transcription = models.TextField(default=None, null=True, blank=True)
