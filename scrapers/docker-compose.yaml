@@ -1,0 +1,39 @@
+version: '3'
+
+
+services:
+
+  redis:
+    image: redis:latest
+    expose:
+      - 6379
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 30s
+      retries: 50
+    restart: always
+  
+  scrapyd:
+    build:
+      context: .
+      dockerfile: ./docker/scrapyd/Dockerfile
+    ports:
+      - 6800:6800
+    volumes:
+      - ./scrapyd:/etc/scrapyd
+    networks:
+      - scrapy-network
+
+  scrapyd-web:
+    build:
+      context: .
+      dockerfile: ./docker/scrapyd-web/Dockerfile
+    ports:
+      - 5000:5000
+    networks:
+      - scrapy-network
+
+networks:
+  scrapy-network:
+    driver: bridge
