@@ -1,7 +1,0 @@
-scrapy
-scrapy-playwright
-dateparser
-git+https://github.com/openai/whisper.git 
-scrapy-djangoitem
-django
-aiohttp
