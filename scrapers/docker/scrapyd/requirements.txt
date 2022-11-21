@@ -6,3 +6,4 @@ scrapy-djangoitem
 django
 aiohttp
 playwright
+logparser
