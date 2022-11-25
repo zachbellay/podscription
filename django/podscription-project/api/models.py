@@ -16,3 +16,4 @@ class PodcastEpisode(models.Model):
     audio_url = models.CharField(max_length=2048, null=False, blank=False)
     details_url = models.CharField(max_length=2048, null=False, blank=False)
     transcription = models.TextField(default=None, null=True, blank=True)
+    audio_file_path = models.CharField(max_length=2048, null=True, blank=True)

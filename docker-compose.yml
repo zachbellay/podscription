@@ -1,0 +1,102 @@
+version: "3.9"
+
+services:
+
+  ###################
+  #      Scrapy     #
+  ###################
+  scrapyd:
+    platform: "linux/amd64"
+    build:
+      context: .
+      dockerfile: ./scrapers/docker/scrapyd/Dockerfile
+
+    # build:
+    #   context: ./scrapers/docker/scrapyd
+      # dockerfile: /Dockerfile
+    ports:
+      - 6800:6800
+    volumes:
+      - ./scrapers/scrapyd:/etc/scrapyd
+    networks:
+      - scrapy-network
+    depends_on:
+      - django_postgres
+
+  scrapyd-web:
+    platform: "linux/amd64"
+
+    environment:
+      - SCRAPYD_SERVERS=scrapyd:6800
+    
+    build: 
+      context: ./scrapers/docker/scrapyd-web
+      # dockerfile: ./docker/scrapyd-web/Dockerfile
+    ports:
+      - 5000:5000
+    networks:
+      - scrapy-network
+    command: scrapydweb --scrapyd_server scrapyd:6800
+    depends_on:
+      - scrapyd
+
+  ###################
+  #    End Scrapy   #
+  ###################
+
+  ###################
+  #     Django      #
+  ###################
+  
+  django:
+    restart: always
+    build:
+      context: .
+      dockerfile: ./django/docker/django/Dockerfile
+    depends_on:
+      - django_postgres
+    volumes:
+      - ./django:/usr/src/app/django
+    environment:
+      - DJANGO_DATABASE_HOST=django_postgres
+      - DJANGO_DATABASE_PORT=5432
+    env_file:
+      - .env
+    networks:
+      - django_postgres_network
+    ports:
+      - "8888:8888"
+
+  django_postgres:
+    container_name: django_postgres
+    build: 
+      context: ./django/docker/postgres
+      # dockerfile: docker/postgres/Dockerfile
+    environment:
+      POSTGRES_USER: ${DJANGO_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${DJANGO_DATABASE_PASSWORD}
+      POSTGRES_DB: ${DJANGO_POSTGRES_DB}
+      # PGDATA: /data/postgres
+    volumes:
+      - ./.data/postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - django_postgres_network
+    restart: unless-stopped
+    env_file:
+      - .env
+
+    ###################
+    #    End Django   #
+    ###################
+
+networks:
+  django_postgres_network:
+    name: django_postgres_network
+    driver: bridge
+  scrapy-network:
+    driver: bridge
+
+volumes:
+  django_postgres:

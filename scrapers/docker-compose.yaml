@@ -15,8 +15,8 @@ services:
     build: ./docker/scrapyd
     ports:
       - 6800:6800
-    volumes:
-      - ./scrapyd:/etc/scrapyd
+    # volumes:
+    #   - ./scrapyd:/etc/scrapyd
     networks:
       - scrapy-network
 

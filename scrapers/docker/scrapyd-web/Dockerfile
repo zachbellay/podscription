@@ -16,8 +16,8 @@ RUN python3 -m pip install --upgrade git+https://github.com/my8100/scrapydweb.gi
 # ENTRYPOINT (scrapydweb || true) && tail -f /dev/null
 
 # CMD [ "scrapydweb" ]
-ENTRYPOINT ["scrapydweb"]
-# ENTRYPOINT tail -f /dev/null
+# ENTRYPOINT ["scrapydweb"]
+ENTRYPOINT tail -f /dev/null
 
 
 # DOCKER_DEFAULT_PLATFORM=linux/amd64 docker run web --volume ./scrapyd-web-volume:/app

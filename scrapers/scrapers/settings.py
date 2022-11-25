@@ -90,7 +90,7 @@ TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 ITEM_PIPELINES = {
     'scrapers.pipelines.AudioDownloadPipeline': 100,
     # 'scrapers.pipelines.TranscribeAudioPipeline': 200,
-    # 'scrapers.pipelines.SaveToDatabasePipeline': 300,
+    'scrapers.pipelines.SaveToDatabasePipeline': 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

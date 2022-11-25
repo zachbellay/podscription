@@ -18,17 +18,17 @@ RUN pip install --upgrade pip setuptools
 RUN pip install poetry
 RUN poetry config virtualenvs.create false
 
-ADD ./pyproject.toml ./
-ADD ./poetry.lock ./
+ADD ./django/pyproject.toml ./
+ADD ./django/poetry.lock ./
 
 RUN poetry install --only main --no-root
 RUN apt install postgresql-client -y
 
-ADD ./ ./
+ADD ./django ./django
 
 FROM base as prod
 EXPOSE 8888
-RUN chmod +x ./docker/django/entry.sh
+# RUN chmod +x ./django/docker/django/entry.sh
 
 # ENTRYPOINT tail -f /dev/null
-CMD ./docker/django/entry.sh
+CMD ./django/docker/django/entry.sh
