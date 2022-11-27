@@ -1,8 +1,0 @@
-scrapy
-scrapyd
-scrapy-playwright
-dateparser
-scrapy-djangoitem
-django
-aiohttp
-playwright

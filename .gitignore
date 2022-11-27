@@ -1,3 +1,4 @@
+.data/
 django/podscription-project/staticfiles
 django/data
 airflow/logs/

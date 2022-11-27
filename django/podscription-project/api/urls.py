@@ -19,7 +19,6 @@ def get_podcast(request, podcast_id: int):
     return Podcast.objects.get(id=podcast_id)
     
 
-
 urlpatterns = [
     path("", api.urls),
 ]
