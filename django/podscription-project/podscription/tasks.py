@@ -1,6 +1,8 @@
-from scrapy.crawler import CrawlerProcess
-from twisted.internet import reactor
+from scrapy.crawler import CrawlerProcess, CrawlerRunner
+# from twisted.internet import reactor
 from billiard import Process
+from twisted.internet import asyncioreactor
+# from multiprocessing import Process
 from scrapy.utils.project import get_project_settings
 from scrapy import signals
 from celery import shared_task
@@ -27,20 +29,46 @@ def setup_periodic_tasks(sender, **kwargs):
     print("setup_periodic_tasks")
     # # sender.add_periodic_task(30.0, ex.s('hello world'), name='add every 2')
 
-    sender.add_periodic_task(5, run_spider, name='run spider every 30 seconds')
+    sender.add_periodic_task(30.0, run_spider, name='run spider every 30 seconds')
 
 
 # from scrapy.crawler import CrawlerProcess
+
+import asyncio
+
+
 
 
 
 class UrlCrawlerScript(Process):
     def __init__(self, spider):
         Process.__init__(self)
+
+        # from scrapy.utils.reactor import install_reactor
+        # install_reactor('twisted.internet.asyncioreactor.AsyncioSelectorReactor')
+        # asyncioreactor.install(asyncio.get_event_loop())
         # settings = get_project_settings()
+        # self.crawler_settings = Settings({
+        #     "TWISTED_REACTOR": "twisted.internet.asyncioreactor.AsyncioSelectorReactor",
+        #     "DOWNLOAD_HANDLERS": {
+        #         "https": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
+        #         "http": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
+        #     }
+        # })
+
+        # get settings from spider_settings file
+        # self.crawler_settings = Settings(spider_settings.__dict__)
+
         self.crawler_settings = Settings()
         self.crawler_settings.setmodule(spider_settings)
         self.crawler = CrawlerProcess(settings=self.crawler_settings)
+        
+
+        # loop = asyncio.get_event_loop()
+        # loop.create_task(...)
+
+        self.reactor = asyncioreactor.AsyncioSelectorReactor()
+        # reactor.run()
         
         # self.crawler.configure()
         # self.crawler.signals.connect(reactor.stop, signal=signals.spider_closed)
@@ -55,14 +83,14 @@ class UrlCrawlerScript(Process):
         # print('doing literally jack shit')
         self.crawler.crawl(self.spider)
 
-        # print('========================================')
-        # print(self.crawler_settings.copy_to_dict())
-        # print('========================================')
+        print('========================================')
+        print(self.crawler_settings.copy_to_dict())
+        print('========================================')
         #     print('ayy lmao')
 
         # print(self.crawler_settings)
         self.crawler.start(stop_after_crawl=True, install_signal_handlers=True)
-        # reactor.run()
+        # self.reactor.run()
 
 @app.task
 def run_spider():
@@ -72,4 +100,7 @@ def run_spider():
     crawler.start()
     crawler.join()
 
-    print('hey sexy')
+    # print('='*25)
+    # print(crawler.crawler_settings.copy_to_dict() )
+    # print('hey sexy')
+    # print('='*25)

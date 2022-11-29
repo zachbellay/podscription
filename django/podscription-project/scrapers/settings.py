@@ -11,14 +11,15 @@ import sys, os, django
 
 
 
-# os.environ['DJANGO_SETTINGS_MODULE'] = 'podscription.settings'
 
-# relative_path = '../'
-# path_to_django = os.path.abspath(os.path.join(os.path.dirname(__file__), relative_path))
-# sys.path.insert(0, path_to_django)
-# django.setup()
+os.environ['DJANGO_SETTINGS_MODULE'] = 'podscription.settings'
 
-# from podscription.api.models import Podcast, PodcastEpisode, PodcastTranscription
+relative_path = '../'
+path_to_django = os.path.abspath(os.path.join(os.path.dirname(__file__), relative_path))
+sys.path.insert(0, path_to_django)
+django.setup()
+
+from api.models import Podcast, PodcastEpisode
 # ModuleNotFoundError: No module named 'podscription.api'
 # the way to resolve this issue is to add the path to the django project to the sys.path
 # I already did that and this is still the error I get

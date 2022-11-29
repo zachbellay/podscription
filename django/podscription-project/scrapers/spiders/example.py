@@ -1,4 +1,5 @@
 import scrapy
+
 from scrapers.items import PodcastItem
 
 
@@ -12,4 +13,4 @@ class ExampleSpider(scrapy.Spider):
         for _ in range(100):
             print('this should be parsing the response')
             
-        yield PodcastItem(name='The Daily', author='The New York Times', url='https://www.nytimes.com/column/the-daily')
+        return PodcastItem(name='The Daily', author='The New York Times', url='https://www.nytimes.com/column/the-daily')
