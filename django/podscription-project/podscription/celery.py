@@ -14,7 +14,7 @@ app.conf.result_chord_join_timeout = 900
 app.conf.result_chord_retry_interval = 5
 app.conf.result_expires = timedelta(days=3)
 
-print('loading celery.py')
+# print('loading celery.py')
 
 
 @app.task(bind=True)

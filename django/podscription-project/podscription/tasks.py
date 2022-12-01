@@ -12,7 +12,7 @@ from scrapy.settings import Settings
 from scrapers import settings as spider_settings
 from django_celery_beat.models import PeriodicTask  
 
-# from scrapers.spiders.the_daily_podcast import TheDailyPodcastSpider
+from scrapers.spiders.the_daily_podcast import TheDailyPodcastSpider
 
 from scrapers.spiders.example import ExampleSpider
 
@@ -29,7 +29,7 @@ def setup_periodic_tasks(sender, **kwargs):
     print("setup_periodic_tasks")
     # # sender.add_periodic_task(30.0, ex.s('hello world'), name='add every 2')
 
-    sender.add_periodic_task(30.0, run_spider, name='run spider every 30 seconds')
+    sender.add_periodic_task(30.0, run_spider, name='run spider every 30 seconds', one_off=True)
 
 
 # from scrapy.crawler import CrawlerProcess
@@ -94,8 +94,8 @@ class UrlCrawlerScript(Process):
 
 @app.task
 def run_spider():
-    # spider = TheDailyPodcastSpider()
-    spider = ExampleSpider
+    spider = TheDailyPodcastSpider
+    # spider = ExampleSpider
     crawler = UrlCrawlerScript(spider)
     crawler.start()
     crawler.join()

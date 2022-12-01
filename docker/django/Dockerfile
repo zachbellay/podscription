@@ -14,6 +14,10 @@ RUN apt-get update && apt-get -y upgrade && \
 WORKDIR /usr/src/app
 RUN mkdir logs && touch ./logs/debug.log
 
+ADD ./docker/celery-worker/requirements.txt ./requirements.txt
+
+RUN pip install -r ./requirements.txt
+
 RUN pip install --upgrade pip setuptools
 RUN pip install poetry
 RUN poetry config virtualenvs.create false
