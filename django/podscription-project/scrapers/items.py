@@ -11,13 +11,14 @@ from api.models import Podcast, PodcastEpisode
 from scrapy_djangoitem import DjangoItem
 
 
+
 class PodcastItem(DjangoItem):
     django_model = Podcast
 
 
 class PodcastEpisodeItem(DjangoItem):
     django_model = PodcastEpisode
-    audio_data_path = scrapy.Field()
+    # audio_data_path = scrapy.Field()
 
     @staticmethod
     def parse_time(value):

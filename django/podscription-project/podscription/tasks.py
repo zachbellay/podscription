@@ -30,6 +30,16 @@ def setup_periodic_tasks(sender, **kwargs):
     # # sender.add_periodic_task(30.0, ex.s('hello world'), name='add every 2')
 
     sender.add_periodic_task(30.0, run_spider, name='run spider every 30 seconds', one_off=True)
+    # task = PeriodicTask(
+    #     name='run spider every 30 seconds',
+    #     task='podscription.tasks.run_spider',
+    #     one_off=True,
+    #     interval=crontab(minute='*/1'),
+    # )
+    # print('print task', task)
+    # task.save()
+    # print('saving task')
+
 
 
 # from scrapy.crawler import CrawlerProcess
@@ -67,7 +77,7 @@ class UrlCrawlerScript(Process):
         # loop = asyncio.get_event_loop()
         # loop.create_task(...)
 
-        self.reactor = asyncioreactor.AsyncioSelectorReactor()
+        # self.reactor = asyncioreactor.AsyncioSelectorReactor()
         # reactor.run()
         
         # self.crawler.configure()
@@ -83,9 +93,9 @@ class UrlCrawlerScript(Process):
         # print('doing literally jack shit')
         self.crawler.crawl(self.spider)
 
-        print('========================================')
-        print(self.crawler_settings.copy_to_dict())
-        print('========================================')
+        # print('========================================')
+        # print(self.crawler_settings.copy_to_dict())
+        # print('========================================')
         #     print('ayy lmao')
 
         # print(self.crawler_settings)
@@ -94,8 +104,18 @@ class UrlCrawlerScript(Process):
 
 @app.task
 def run_spider():
-    spider = TheDailyPodcastSpider
+    
+    task = PeriodicTask.objects.filter(name='run spider every 30 seconds')
+
+    task = task.first()
+
+    task.one_off = True
+
+    task.save()
+
+
     # spider = ExampleSpider
+    spider = TheDailyPodcastSpider
     crawler = UrlCrawlerScript(spider)
     crawler.start()
     crawler.join()

@@ -11,6 +11,7 @@ import aiohttp
 import scrapy
 # import whisper
 from threading import Lock
+import psycopg2
 from api.models import PodcastEpisode
 import tempfile
 import concurrent.futures
@@ -18,9 +19,9 @@ import concurrent.futures
 # from asgiref.sync import async_to_sync
 from asgiref.sync import sync_to_async
 
-class ScrapersPipeline:
-    def process_item(self, item, spider):
-        return item
+# class ScrapersPipeline:
+#     def process_item(self, item, spider):
+#         return item
 
 
 # class AudioDownloadPipeline:
@@ -98,35 +99,29 @@ class ScrapersPipeline:
 #         # item.save(commit=False)
 #         return item
 
+from itemadapter import ItemAdapter
+from scrapy.exceptions import DropItem
+
+class DuplicatesPipeline:
+
+    def __init__(self):
+        self.urls_seen = set()
+
+    def process_item(self, item, spider):
+        adapter = ItemAdapter(item)
+        if adapter['details_url'] in self.urls_seen:
+            raise DropItem(f"Duplicate item found: {item!r}")
+        else:
+            self.urls_seen.add(adapter['details_url'])
+            return item
+
+
 
 class SaveToDatabasePipeline:
 
+
     async def process_item(self, item, spider):
-        # item.save()
-        await sync_to_async(item.save)()
-        for _ in range(100):
-            print('this should be saving the item to the database')
-        return item
-
-#     batch_size = 100
-#     item_batch = []
-
-#     async def _bulk_create(self, batch):
-#         await sync_to_async(list)(PodcastEpisode.objects.bulk_create(batch))
-
-#     async def process_item(self, item, spider):
-#         if len(self.item_batch) < self.batch_size:
-#             podcast = item.save(commit=False)
-#             self.item_batch.append(podcast)
-#         else:
-#             # await PodcastEpisode.objects.bulk_create(self.item_batch)
-#             await self._bulk_create(self.item_batch)
-#             self.item_batch = []
-
-#         return item
-
-#     async def close_spider(self, spider):
-#         if self.item_batch:
-#             # await PodcastEpisode.objects.bulk_create(self.item_batch)
-#             await self._bulk_create(self.item_batch)
+        save = sync_to_async(item.save)
+        result =  await save()
+        return result
 

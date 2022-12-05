@@ -22,7 +22,9 @@ class PodcastEpisode(models.Model):
     title = models.CharField(max_length=200, null=False)
     description = models.TextField(null=False)
     audio_url = models.CharField(max_length=2048, null=False, blank=False)
-    details_url = models.CharField(max_length=2048, null=False, blank=False, unique=True)
+
+    details_url = models.CharField(max_length=2048, null=False, blank=False)
+    # details_url = models.CharField(max_length=2048, null=False, blank=False, unique=True)
     transcription = models.TextField(default=None, null=True, blank=True)
 
     class Meta:
