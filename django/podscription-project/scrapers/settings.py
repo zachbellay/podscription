@@ -7,32 +7,33 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-import sys, os, django
+import os
+import sys
 
+import django
 
+os.environ["DJANGO_SETTINGS_MODULE"] = "podscription.settings"
 
-
-os.environ['DJANGO_SETTINGS_MODULE'] = 'podscription.settings'
-
-relative_path = '../'
+relative_path = "../"
 path_to_django = os.path.abspath(os.path.join(os.path.dirname(__file__), relative_path))
 sys.path.insert(0, path_to_django)
-django.setup()
+# django.setup()
 
 from api.models import Podcast, PodcastEpisode
+
 # ModuleNotFoundError: No module named 'podscription.api'
 # the way to resolve this issue is to add the path to the django project to the sys.path
 # I already did that and this is still the error I get
-# 
+#
 
-BOT_NAME = 'scrapers'
+BOT_NAME = "scrapers"
 
-SPIDER_MODULES = ['scrapers.spiders']
-NEWSPIDER_MODULE = 'scrapers.spiders'
+SPIDER_MODULES = ["scrapers.spiders"]
+NEWSPIDER_MODULE = "scrapers.spiders"
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'wsj (+http://www.yourdomain.com)'
+# USER_AGENT = 'wsj (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
@@ -49,45 +50,45 @@ TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-#CONCURRENT_REQUESTS = 32
+# CONCURRENT_REQUESTS = 32
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://docs.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-#DOWNLOAD_DELAY = 3
+# DOWNLOAD_DELAY = 3
 # The download delay setting will honor only one of:
-#CONCURRENT_REQUESTS_PER_DOMAIN = 16
-#CONCURRENT_REQUESTS_PER_IP = 16
+# CONCURRENT_REQUESTS_PER_DOMAIN = 16
+# CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable cookies (enabled by default)
-#COOKIES_ENABLED = False
+# COOKIES_ENABLED = False
 
 # Disable Telnet Console (enabled by default)
-#TELNETCONSOLE_ENABLED = False
+# TELNETCONSOLE_ENABLED = False
 
 # Override the default request headers:
-#DEFAULT_REQUEST_HEADERS = {
+# DEFAULT_REQUEST_HEADERS = {
 #   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
 #   'Accept-Language': 'en',
-#}
+# }
 
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
-#SPIDER_MIDDLEWARES = {
+# SPIDER_MIDDLEWARES = {
 #    'wsj.middlewares.WsjSpiderMiddleware': 543,
-#}
+# }
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-#DOWNLOADER_MIDDLEWARES = {
+# DOWNLOADER_MIDDLEWARES = {
 #    'wsj.middlewares.WsjDownloaderMiddleware': 543,
-#}
+# }
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
-#EXTENSIONS = {
+# EXTENSIONS = {
 #    'scrapy.extensions.telnet.TelnetConsole': None,
-#}
+# }
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
@@ -95,7 +96,7 @@ ITEM_PIPELINES = {
     # 'scrapers.pipelines.AudioDownloadPipeline': 100,
     # 'scrapers.pipelines.TranscribeAudioPipeline': 200,
     # 'scrapers.pipelines.DuplicatesPipeline': 100,
-    'scrapers.pipelines.SaveToDatabasePipeline': 200,
+    "scrapers.pipelines.SaveToDatabasePipeline": 200,
     # 'scrapers.pipelines.SaveToFile': 100,
 }
 
@@ -110,7 +111,7 @@ AUTOTHROTTLE_MAX_DELAY = 60
 # each remote server
 AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0
 # Enable showing throttling stats for every response received:
-#AUTOTHROTTLE_DEBUG = False
+# AUTOTHROTTLE_DEBUG = False
 
 # Enable and configure HTTP caching (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html#httpcache-middleware-settings

@@ -4,20 +4,25 @@
 # See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 
 
-# useful for handling different item types with a single interface
-from itemadapter import ItemAdapter
 import asyncio
-import aiohttp
-import scrapy
+import concurrent.futures
+import tempfile
+
 # import whisper
 from threading import Lock
+
+import aiohttp
 import psycopg2
-from api.models import PodcastEpisode
-import tempfile
-import concurrent.futures
+import scrapy
 
 # from asgiref.sync import async_to_sync
 from asgiref.sync import sync_to_async
+
+# useful for handling different item types with a single interface
+from itemadapter import ItemAdapter
+from scrapy.exceptions import DropItem
+
+from api.models import PodcastEpisode
 
 # class ScrapersPipeline:
 #     def process_item(self, item, spider):
@@ -79,13 +84,13 @@ from asgiref.sync import sync_to_async
 #             async with self.lock:
 #                 transcription = self.transcribe(adapter.get("audio_data_path"))
 #                 # with concurrent.futures.ProcessPoolExecutor(max_workers=1) as pool:
-            
+
 #                 #     future = pool.submit(self.transcribe, adapter.get("audio_data_path"))
 #                 #     result = concurrent.futures.wait(future)
 #                 #     transcription = result.result()
 #                 # results = [future.result() for future in futures]
 #                 # transcription = results[0]
-            
+
 #             adapter["transcription"] = transcription["text"]
 #             return item
 
@@ -99,29 +104,22 @@ from asgiref.sync import sync_to_async
 #         # item.save(commit=False)
 #         return item
 
-from itemadapter import ItemAdapter
-from scrapy.exceptions import DropItem
 
 class DuplicatesPipeline:
-
     def __init__(self):
         self.urls_seen = set()
 
     def process_item(self, item, spider):
         adapter = ItemAdapter(item)
-        if adapter['details_url'] in self.urls_seen:
+        if adapter["details_url"] in self.urls_seen:
             raise DropItem(f"Duplicate item found: {item!r}")
         else:
-            self.urls_seen.add(adapter['details_url'])
+            self.urls_seen.add(adapter["details_url"])
             return item
 
 
-
 class SaveToDatabasePipeline:
-
-
     async def process_item(self, item, spider):
         save = sync_to_async(item.save)
-        result =  await save()
+        result = await save()
         return result
-

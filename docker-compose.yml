@@ -7,12 +7,12 @@ services:
       context: .
       dockerfile: docker/celery-flower/Dockerfile
     environment:
-      DATABASE_NAME: ${DJANGO_POSTGRES_DB}
-      DATABASE_USER: ${DJANGO_POSTGRES_USER}
-      DATABASE_PASSWORD: ${DJANGO_DATABASE_PASSWORD}
-      DATABASE_HOST: postgres
-      DATABASE_PORT: 5432
-      REDIS_URL: redis://redis:6379/0
+      - DATABASE_NAME=${DJANGO_POSTGRES_DB}
+      - DATABASE_USER=${DJANGO_POSTGRES_USER}
+      - DATABASE_PASSWORD=${DJANGO_DATABASE_PASSWORD}
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - REDIS_URL=redis://redis:6379/0
     depends_on:
       - postgres
       - redis
@@ -37,12 +37,12 @@ services:
       - postgres
       - redis
     environment:
-      DATABASE_NAME: ${DJANGO_POSTGRES_DB}
-      DATABASE_USER: ${DJANGO_POSTGRES_USER}
-      DATABASE_PASSWORD: ${DJANGO_DATABASE_PASSWORD}
-      DATABASE_HOST: postgres
-      DATABASE_PORT: 5432
-      REDIS_URL: redis://redis:6379/0
+      - DATABASE_NAME=${DJANGO_POSTGRES_DB}
+      - DATABASE_USER=${DJANGO_POSTGRES_USER}
+      - DATABASE_PASSWORD=${DJANGO_DATABASE_PASSWORD}
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - REDIS_URL=redis://redis:6379/0
     networks:
       - postgres
       - redis
@@ -68,10 +68,12 @@ services:
     environment:
       - DJANGO_DATABASE_HOST=postgres
       - DJANGO_DATABASE_PORT=5432
+      - REDIS_URL=redis://redis:6379/0
     env_file:
       - .env
     networks:
       - postgres
+      - redis
     ports:
       - "8888:8888"
 

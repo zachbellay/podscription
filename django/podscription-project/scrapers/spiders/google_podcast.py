@@ -12,17 +12,14 @@ from api.models import Podcast
 from scrapers.items import PodcastEpisodeItem, PodcastItem
 
 
-class TheDailyPodcastSpider(scrapy.Spider):
-    name = "the-daily-podcast"
+class GooglePodcastSpider(scrapy.Spider):
+    name = "google-podcast-spider"
 
-    podcast, created = Podcast.objects.get_or_create(
-        name="The Daily",
-        author="The New York Times",
-        url="https://podcasts.google.com/feed/aHR0cHM6Ly9mZWVkcy5zaW1wbGVjYXN0LmNvbS81NG5BR2NJbA",
-    )
+    def __init__(self, podcast_id: str):
+        self.podcast = Podcast.objects.filter(id=podcast_id).first()
 
     def start_requests(self):
-        url = "https://podcasts.google.com/feed/aHR0cHM6Ly9mZWVkcy5zaW1wbGVjYXN0LmNvbS81NG5BR2NJbA"
+        url = self.podcast.url
         yield scrapy.Request(
             url,
             meta=dict(

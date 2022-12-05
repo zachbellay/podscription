@@ -7,9 +7,9 @@ from datetime import datetime
 
 import dateparser
 import scrapy
-from api.models import Podcast, PodcastEpisode
 from scrapy_djangoitem import DjangoItem
 
+from api.models import Podcast, PodcastEpisode
 
 
 class PodcastItem(DjangoItem):

@@ -31,25 +31,12 @@ ADD ./docker ./docker
 COPY ./docker/celery/celeryd /etc/init.d/
 COPY ./docker/celery/celerybeat /etc/init.d/
 COPY ./docker/celery/config/celeryd /etc/default/
-RUN ["chmod", "755", "/etc/init.d/celeryd"]
-RUN ["chmod", "755", "/etc/init.d/celerybeat"]
-RUN ["chmod", "640", "/etc/default/celeryd"]
 
-RUN ["chmod", "+x", "./docker/celery-worker/entry.sh"]
+RUN chmod 755 /etc/init.d/celeryd && \
+    chmod 755 /etc/init.d/celerybeat && \
+    chmod 640 /etc/default/celeryd && \
+    chmod +x ./docker/celery-worker/entry.sh
 
 ADD ./django ./django
 
-# RUN python -c "from scrapy.utils.reactor import install_reactor; install_reactor('twisted.internet.asyncioreactor.AsyncioSelectorReactor')"
-
 ENTRYPOINT ["./docker/celery-worker/entry.sh"]
-
-# create non root user and then run the container as that user
-
-
-
-
-
-
-
-
-# ENTRYPOINT tail -f /dev/null
