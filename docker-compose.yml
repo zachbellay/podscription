@@ -50,6 +50,30 @@ services:
     env_file:
       - .env
 
+  celery-whisper-worker:
+    restart: always
+    build:
+      context: .
+      dockerfile: docker/celery-whisper-worker/Dockerfile
+    volumes:
+      - ./django:/usr/src/app/django
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      - DATABASE_NAME=${DJANGO_POSTGRES_DB}
+      - DATABASE_USER=${DJANGO_POSTGRES_USER}
+      - DATABASE_PASSWORD=${DJANGO_DATABASE_PASSWORD}
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - REDIS_URL=redis://redis:6379/0
+    networks:
+      - postgres
+      - redis
+      - celery-worker
+    env_file:
+      - .env
+
   redis:
     image: "redis:alpine"
     networks:

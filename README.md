@@ -1,7 +1,8 @@
-#  run this command from the ./airflow/dags directory
-ln -s ../../scrapers scrapers
 
 
-docker buildx build --platform linux/amd64 --output type=docker -t airflow-base:latest .
+# Open SSH tunnel to VPS to connect networks
 
-docker run --rm -it --platform linux/amd64 airflow-base:latest bash
+```bash
+ssh -L 8080:localhost:8080 -i ~/.ssh/id_rsa root@66.175.236.89
+```
+

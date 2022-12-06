@@ -2,12 +2,12 @@ CELERYD_NODES="worker"
 
 # App instance to use
 # comment out this line if you don't use an app
-CELERY_APP="findmyhitman"
+CELERY_APP="podscription"
 CELERY_BIN="/usr/local/bin/celery"
 
 # Where to chdir at start.
-CELERYD_CHDIR="/usr/src/app/findmyhitman"
-CELERYBEAT_CHDIR="/usr/src/app/findmyhitman"
+CELERYD_CHDIR="/usr/src/app/django/podscription-project"
+CELERYBEAT_CHDIR="/usr/src/app/django/podscription-project"
 
 # Extra command-line arguments to the worker
 # CELERYD_OPTS="-Q:celery"

@@ -151,3 +151,9 @@ CELERY_TASK_TRACK_STARTED = True
 CELERY_ACKS_LATE = True
 CELERY_WORKER_SEND_TASK_EVENTS = True
 CELERY_TASK_SEND_SENT_EVENT = True
+
+CELERY_ROUTES = {
+    'transcribe': {
+        'queue' : 'transcription-worker'
+    }
+}

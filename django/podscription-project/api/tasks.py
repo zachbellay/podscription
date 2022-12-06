@@ -13,6 +13,14 @@ from django_celery_beat.models import PeriodicTask
 from api.models import Podcast
 from scrapers.spiders.google_podcast import GooglePodcastSpider
 
+from podscription.celery import app
+import whisper
+import requests
+from api.models import Podcast, PodcastEpisode
+import tempfile
+
+model = None
+model_size = "base"
 
 class CeleryCrawlerProcess(Process):
     def __init__(self, spider, podcast_id: str):
@@ -36,6 +44,10 @@ def run_spider(podcast_id: str):
     crawler.start()
     crawler.join()
 
+    untranscribed_podcast_episodes = PodcastEpisode.objects.filter(podcast=podcast_id, transcription=None)
+    for podcast_episode in untranscribed_podcast_episodes:
+        transcribe_podcast_episode.delay(podcast_episode.id)
+
 @app.task
 def queue_all_spiders():
     all_podcasts = Podcast.objects.all()
@@ -48,3 +60,30 @@ def setup_periodic_tasks(sender, **kwargs):
 
     print('Setting up periodic tasks...')
     sender.add_periodic_task(3600 * 4, queue_all_spiders, name='Schedule spiders to scrape all podcasts')
+
+@app.task(queue='transcription_worker')
+def transcribe_podcast_episode(podcast_episode_id: str):
+    global model
+    if not model:
+        print(f'Initializing whisper model of size {model_size}...')
+    
+        model = whisper.load_model(model_size)
+
+    podcast_episode = PodcastEpisode.objects.get(id=podcast_episode_id)
+
+    if podcast_episode.transcription:
+        raise ValueError("Podcast episode already has a transcription")
+    
+    r = requests.get(podcast_episode.audio_url)
+    audio_data = r.content
+
+    f = tempfile.NamedTemporaryFile()
+    f.write(audio_data)
+
+    transcription = model.transcribe(f.name, language="en", without_timestamps=True)
+    transcription_text = transcription['text']
+
+    f.close()
+
+    podcast_episode.transcription = transcription_text
+    podcast_episode.save()
