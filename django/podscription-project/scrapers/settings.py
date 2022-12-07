@@ -17,7 +17,6 @@ os.environ["DJANGO_SETTINGS_MODULE"] = "podscription.settings"
 relative_path = "../"
 path_to_django = os.path.abspath(os.path.join(os.path.dirname(__file__), relative_path))
 sys.path.insert(0, path_to_django)
-# django.setup()
 
 from api.models import Podcast, PodcastEpisode
 
@@ -115,7 +114,7 @@ AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0
 
 # Enable and configure HTTP caching (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html#httpcache-middleware-settings
-HTTPCACHE_ENABLED = True
+HTTPCACHE_ENABLED = False
 # HTTPCACHE_EXPIRATION_SECS = 0
 # HTTPCACHE_DIR = 'httpcache'
 # HTTPCACHE_IGNORE_HTTP_CODES = []

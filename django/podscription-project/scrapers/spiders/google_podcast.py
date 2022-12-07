@@ -1,7 +1,3 @@
-import re
-
-from copy import deepcopy
-
 import scrapy
 from itemloaders.processors import MapCompose, TakeFirst
 from scrapy.loader import ItemLoader
@@ -31,8 +27,6 @@ class GooglePodcastSpider(scrapy.Spider):
 
     def parse(self, response):
 
-        url = response.url
-
         podcasts_div = response.css("div[role=list]")
         podcast_episodes = podcasts_div.css("a[role=listitem]")
 
@@ -46,6 +40,7 @@ class GooglePodcastSpider(scrapy.Spider):
             details_url = podcast_episode.css("a::attr(href)").get()
 
             podcast_episode_item["podcast"] = self.podcast
+            podcast_episode_item['podcast_name'] = self.podcast.name
             podcast_episode_item["date"] = PodcastEpisodeItem.parse_time(time)
             podcast_episode_item["title"] = title
             podcast_episode_item["description"] = description

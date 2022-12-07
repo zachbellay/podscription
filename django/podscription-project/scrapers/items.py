@@ -11,6 +11,7 @@ from scrapy_djangoitem import DjangoItem
 
 from api.models import Podcast, PodcastEpisode
 
+from urllib.parse import urljoin, urlparse
 
 class PodcastItem(DjangoItem):
     django_model = Podcast
@@ -18,7 +19,6 @@ class PodcastItem(DjangoItem):
 
 class PodcastEpisodeItem(DjangoItem):
     django_model = PodcastEpisode
-    # audio_data_path = scrapy.Field()
 
     @staticmethod
     def parse_time(value):
@@ -34,8 +34,9 @@ class PodcastEpisodeItem(DjangoItem):
     @staticmethod
     def parse_details_url(value):
         url = f"https://podcasts.google.com{value[1:]}"
+
+        # remove query params
+        url = urljoin(url, urlparse(url).path)
         return url
 
 
-# class PodcastTranscriptionItem(DjangoItem):
-#     django_model = PodcastTranscription

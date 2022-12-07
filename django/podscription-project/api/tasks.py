@@ -10,7 +10,6 @@ from scrapy.settings import Settings
 from scrapers import settings as spider_settings
 from django_celery_beat.models import PeriodicTask  
 
-from api.models import Podcast
 from scrapers.spiders.google_podcast import GooglePodcastSpider
 
 from podscription.celery import app
@@ -44,6 +43,7 @@ def run_spider(podcast_id: str):
     crawler.start()
     crawler.join()
 
+    # send podcasts to transcription queue
     untranscribed_podcast_episodes = PodcastEpisode.objects.filter(podcast=podcast_id, transcription=None)
     for podcast_episode in untranscribed_podcast_episodes:
         transcribe_podcast_episode.delay(podcast_episode.id)
@@ -72,7 +72,8 @@ def transcribe_podcast_episode(podcast_episode_id: str):
     podcast_episode = PodcastEpisode.objects.get(id=podcast_episode_id)
 
     if podcast_episode.transcription:
-        raise ValueError("Podcast episode already has a transcription")
+        print("Podcast episode already has a transcription")
+        return
     
     r = requests.get(podcast_episode.audio_url)
     audio_data = r.content
