@@ -1,3 +1,4 @@
+import logging
 from scrapy.crawler import CrawlerProcess, CrawlerRunner
 from billiard import Process
 from twisted.internet import asyncioreactor
@@ -20,6 +21,10 @@ import tempfile
 
 model = None
 model_size = "base"
+
+
+logger = logging.getLogger(__name__)
+
 
 class CeleryCrawlerProcess(Process):
     def __init__(self, spider, podcast_id: str):
@@ -49,6 +54,12 @@ def run_spider(podcast_id: str):
         transcribe_podcast_episode.delay(podcast_episode.id)
 
 @app.task
+def queue_untranscribed_podcast_episodes():
+    eps = PodcastEpisode.objects.filter(transcription=None)
+    for ep in eps:
+        transcribe_podcast_episode.delay(ep.id)
+
+@app.task
 def queue_all_spiders():
     all_podcasts = Podcast.objects.all()
 
@@ -65,24 +76,32 @@ def setup_periodic_tasks(sender, **kwargs):
 def transcribe_podcast_episode(podcast_episode_id: str):
     global model
     if not model:
-        print(f'Initializing whisper model of size {model_size}...')
+        logger.info(f'Initializing whisper model of size {model_size}...')
     
         model = whisper.load_model(model_size)
 
     podcast_episode = PodcastEpisode.objects.get(id=podcast_episode_id)
 
+    logger.info(f"Transcribing podcast episode\n id: {podcast_episode_id}\n title: {podcast_episode.title}\n podcast: {podcast_episode.podcast.name}\n date: {podcast_episode.date}\n")
+
     if podcast_episode.transcription:
-        print("Podcast episode already has a transcription")
+        logger.info("Podcast episode already has a transcription")
         return
     
     r = requests.get(podcast_episode.audio_url)
     audio_data = r.content
 
+    logger.info(f"Audio data length: {len(audio_data)} bytes")
+
     f = tempfile.NamedTemporaryFile()
     f.write(audio_data)
 
+    logger.info(f"Saved audio data to {f.name}")
+
     transcription = model.transcribe(f.name, language="en", without_timestamps=True)
     transcription_text = transcription['text']
+
+    logger.info(f"Completed transcription")
 
     f.close()
 

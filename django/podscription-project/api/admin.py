@@ -1,4 +1,5 @@
 from django.contrib import admin
+from rangefilter.filters import DateRangeFilter
 
 from .models import Podcast, PodcastEpisode
 from .tasks import run_spider
@@ -22,6 +23,10 @@ class PodcastEpisodeAdmin(admin.ModelAdmin):
         "date",
         "title",
     )
+
+    search_fields = ("title", "podcast__name", "podcast__author")
+
+    list_filter = (('date', DateRangeFilter),)
     
 
 admin.site.register(Podcast, PodcastAdmin)

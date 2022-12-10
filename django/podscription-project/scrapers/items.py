@@ -29,7 +29,8 @@ class PodcastEpisodeItem(DjangoItem):
     @staticmethod
     def parse_audio_url(value):
         start = value.find("http")
-        return value[start:]
+        end = value.find(";")
+        return value[start:end] if end != -1 else value[start:]
 
     @staticmethod
     def parse_details_url(value):
@@ -38,5 +39,6 @@ class PodcastEpisodeItem(DjangoItem):
         # remove query params
         url = urljoin(url, urlparse(url).path)
         return url
+
 
 
