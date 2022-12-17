@@ -80,3 +80,5 @@ zope.interface==5.5.2
 git+https://github.com/zachbellay/scrapy-djangoitem
 git+https://github.com/openai/whisper.git 
 django-admin-rangefilter==0.9.0
+django-vite==2.0.2
+beautifulsoup4==4.11.1

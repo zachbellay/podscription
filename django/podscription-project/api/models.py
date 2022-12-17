@@ -9,6 +9,10 @@ class Podcast(models.Model):
     name = models.CharField(max_length=100, null=False, blank=False)
     author = models.CharField(max_length=100, null=False, blank=False)
     url = models.CharField(max_length=2048, null=False, blank=False, unique=True)
+    logo_url = models.CharField(max_length=2048, null=False, blank=False)
+    description = models.TextField(null=False)
+    website_url = models.CharField(max_length=2048, null=False, blank=False)
+    active = models.BooleanField(default=True)
 
     class Meta:
         constraints = [

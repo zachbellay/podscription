@@ -143,9 +143,6 @@ services:
     env_file:
       - .env
 
-
-    
-
 networks:
   postgres:
     driver: bridge
@@ -156,13 +153,4 @@ networks:
 
 volumes:
   postgres:
-
-networks:
-  postgres:
-    driver: bridge
-  redis:
-    driver: bridge
-  celery-worker:
-    driver: bridge
-
 
