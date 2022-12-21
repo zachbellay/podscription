@@ -1,6 +1,7 @@
 import scrapy
 from itemloaders.processors import MapCompose, TakeFirst
 from scrapy.loader import ItemLoader
+from scrapy.exceptions import DropItem
 from scrapy_playwright.page import PageMethod
 
 from api.models import Podcast
@@ -9,7 +10,7 @@ from scrapers.items import PodcastEpisodeItem, PodcastItem
 
 
 class GooglePodcastSpider(scrapy.Spider):
-    name = "google-podcast-spider"
+    name = "google-podcast-spider"      
 
     def __init__(self, podcast_id: str):
         self.podcast = Podcast.objects.filter(id=podcast_id).first()
@@ -37,6 +38,12 @@ class GooglePodcastSpider(scrapy.Spider):
                 s.extract() for s in podcast_episode.css("div[role=presentation]::text")
             )
             audio_url = podcast_episode.css("div[jsdata]::attr(jsdata)").get()
+
+
+            if not audio_url or audio_url == '':
+                raise DropItem(f"Missing audio_url for {self.podcast.name} - {title}")
+
+
             details_url = podcast_episode.css("a::attr(href)").get()
 
             podcast_episode_item["podcast"] = self.podcast
@@ -50,8 +57,10 @@ class GooglePodcastSpider(scrapy.Spider):
             podcast_episode_item["details_url"] = PodcastEpisodeItem.parse_details_url(
                 details_url
             )
-
-            yield podcast_episode_item
+            
+            yield podcast_episode_item    
+                    
+                
 
     def errback(self, failure):
         page = failure.request.meta["playwright_page"]

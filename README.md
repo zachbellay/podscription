@@ -22,7 +22,7 @@ docker run --env-file .env --network='host' --gpus all podscription-celery-whisp
 --- 
 
 # generate api client
-openapi-generator-cli generate -i http://localhost:8888/api/openapi.json -g typescript-fetch -o ./django/podscription-project/static/src/js/adapters/
+openapi-generator-cli generate -i http://localhost:8888/api/v1/openapi.json -g typescript-fetch -t ./django/podscription-project/static/openapi-templates/ -o ./django/podscription-project/static/src/js/adapters/
 
 
 

@@ -1,17 +1,18 @@
 import requests
+from api.models import Podcast
 from bs4 import BeautifulSoup
 
 from django.core.management.base import BaseCommand, CommandError
-from api.models import Podcast
+
 
 class Command(BaseCommand):
-    help = 'Adds a podcast to the database'
+    help = "Adds a podcast to the database"
 
     def add_arguments(self, parser):
-        parser.add_argument('url', type=str, help='The URL of the podcast to add')
-    
+        parser.add_argument("url", type=str, help="The URL of the podcast to add")
+
     def handle(self, *args, **kwargs):
-        url = kwargs['url']
+        url = kwargs["url"]
 
         headers = {
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:107.0) Gecko/20100101 Firefox/107.0"
@@ -38,13 +39,8 @@ class Command(BaseCommand):
             url=url,
             logo_url=podcast_image,
             description=description,
-            website_url=website_url
+            website_url=website_url,
         )
         podcast.save()
 
-        self.stdout.write(self.style.SUCCESS('Successfully added podcast'))
-
-
-
-
-
+        self.stdout.write(self.style.SUCCESS("Successfully added podcast"))

@@ -1,17 +1,18 @@
 import requests
+from api.models import Podcast
 from bs4 import BeautifulSoup
 
 from django.core.management.base import BaseCommand, CommandError
-from api.models import Podcast
+
 
 class Command(BaseCommand):
-    help = 'Updates a podcast to the database'
+    help = "Updates a podcast to the database"
 
     def add_arguments(self, parser):
-        parser.add_argument('url', type=str, help='The URL of the podcast to update')
-    
+        parser.add_argument("url", type=str, help="The URL of the podcast to update")
+
     def handle(self, *args, **kwargs):
-        url = kwargs['url']
+        url = kwargs["url"]
 
         headers = {
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:107.0) Gecko/20100101 Firefox/107.0"
@@ -32,22 +33,18 @@ class Command(BaseCommand):
         print(f"Image: {podcast_image}")
         print(f"Website: {website_url}")
 
-        success = Podcast.objects.filter(url=url).update(**{
-            'name':title,
-            'author':author,
-            'url':url,
-            'logo_url':podcast_image,
-            'description':description,
-            'website_url':website_url    
+        success = Podcast.objects.filter(url=url).update(
+            **{
+                "name": title,
+                "author": author,
+                "url": url,
+                "logo_url": podcast_image,
+                "description": description,
+                "website_url": website_url,
             }
         )
 
         if success:
-            self.stdout.write(self.style.SUCCESS('Successfully updated podcast'))
+            self.stdout.write(self.style.SUCCESS("Successfully updated podcast"))
         else:
-            self.stdout.write(self.style.ERROR('Failed to update podcast'))
-
-
-
-
-
+            self.stdout.write(self.style.ERROR("Failed to update podcast"))

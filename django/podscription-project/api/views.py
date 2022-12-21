@@ -1,31 +1,28 @@
 from typing import List
 
-from django.contrib import admin
-
-from django.shortcuts import render
-
-from ninja import NinjaAPI
-
 from api.models import Podcast, PodcastEpisode
-from api.schema import PodcastEpisodeOut, PodcastOut, PodcastSearchResultOut, PodcastEpisodeLightOut
+from api.schema import (
+    PodcastEpisodeLightOut,
+    PodcastEpisodeOut,
+    PodcastOut,
+    PodcastSearchResultOut,
+)
+from ninja import NinjaAPI
+from ninja.errors import HttpError
 
-from django.core.paginator import Paginator
-
+from django.contrib import admin
 from django.contrib.postgres.search import (
-    SearchVector,
+    SearchHeadline,
     SearchQuery,
     SearchRank,
-    SearchHeadline,
+    SearchVector,
+    TrigramSimilarity,
 )
-
+from django.core.paginator import Paginator
 from django.db.models import F, Value
-from django.contrib.postgres.search import TrigramSimilarity, SearchVector
-
-from django.db.models import F
+from django.shortcuts import get_object_or_404, render
 
 api = NinjaAPI()
-
-
 
 
 # def search(query):
@@ -43,52 +40,56 @@ api = NinjaAPI()
 #     ).filter(similarity__gt=0.3, transcription__isnull=False).order_by('-similarity')
 #     return list(podcasts) + list(episodes)
 
-@api.get("/search", response=List[PodcastSearchResultOut], tags=['search'], operation_id='search')
+
+@api.get(
+    "/search",
+    response=List[PodcastSearchResultOut],
+    tags=["search"],
+    operation_id="search",
+)
 def search(request, q: str):
     query = q
 
     podcasts = list(
-        Podcast.objects.annotate(similarity=TrigramSimilarity('name', q))
-        .filter(similarity__gt=0.3)    
-        .order_by('-similarity')
+        Podcast.objects.annotate(similarity=TrigramSimilarity("name", q))
+        .filter(similarity__gt=0.3)
+        .order_by("-similarity")
     )
 
     podcasts += list(
-        Podcast.objects.annotate(similarity=TrigramSimilarity('author', q))
+        Podcast.objects.annotate(similarity=TrigramSimilarity("author", q))
         .filter(similarity__gt=0.3)
-        .order_by('-similarity')
+        .order_by("-similarity")
     )
 
     for p in podcasts:
         print(p.similarity)
-    
 
     # TODO: Look into how to handle the case where a transcript hasn't been generated
     # but there is a match in the description. Should I show the description?
 
     search_query = SearchQuery(query)
     search_headline = SearchHeadline(
-        "transcription",
-        search_query,
-        start_sel="",
-        stop_sel=""
+        "transcription", search_query, start_sel="", stop_sel=""
     )
 
     podcast_search_results = (
-        PodcastEpisode.objects.filter(search_vector=search_query, transcription__isnull=False)
+        PodcastEpisode.objects.filter(
+            search_vector=search_query, transcription__isnull=False
+        )
         .annotate(headline=search_headline)
-        .annotate(rank=SearchRank(SearchVector('transcription'), search_query))
+        .annotate(rank=SearchRank(SearchVector("transcription"), search_query))
         .order_by("-rank")
     )[:10]
 
     for p in podcast_search_results:
         print(p.rank)
 
-# description_search_results = (
-# PodcastEpisode.objects.annotate(
-#     search_description=SearchVector('description'),
-#     rank=SearchRank(SearchVector('description'), SearchQuery('elon musk'))
-# ).annotate(headline=SearchHeadline('description', SearchQuery('elon musk'))).filter(rank__gt=0.1).order_by('-date').first().description
+    # description_search_results = (
+    # PodcastEpisode.objects.annotate(
+    #     search_description=SearchVector('description'),
+    #     rank=SearchRank(SearchVector('description'), SearchQuery('elon musk'))
+    # ).annotate(headline=SearchHeadline('description', SearchQuery('elon musk'))).filter(rank__gt=0.1).order_by('-date').first().description
 
     # query to search podcasts by name
     # Podcast.objects.annotate(headline=SearchHeadline('name', 'the daily'))
@@ -106,7 +107,6 @@ def search(request, q: str):
     #     .order_by("-date")
     # )[:10]
 
-
     results = [
         PodcastSearchResultOut(
             episode_id=podcast_episode.id,
@@ -119,24 +119,57 @@ def search(request, q: str):
     return results
 
 
-@api.get("/podcasts", response=List[PodcastOut], tags=['podcasts'], operation_id='list_podcasts')
+@api.get(
+    "/podcasts",
+    response=List[PodcastOut],
+    tags=["podcasts"],
+    operation_id="list_podcasts",
+)
 def list_podcasts(request, page: int = 1):
-    podcasts = Podcast.objects.all()
+    podcasts = Podcast.objects.all(active=True)
     paginator = Paginator(podcasts, 20)
     page_obj = paginator.get_page(page)
     return page_obj.object_list
 
 
-@api.get("/podcasts/{podcast_id}", response=PodcastOut, tags=['podcasts'], operation_id='get_podcast')
+@api.get(
+    "/podcasts/id/{podcast_id}",
+    response=PodcastOut,
+    tags=["podcasts"],
+    operation_id="get_podcast",
+)
 def get_podcast(request, podcast_id: int):
-    return Podcast.objects.get(id=podcast_id)
+    return get_object_or_404(Podcast, id=podcast_id, active=True)
 
 
-@api.get("/podcasts/{podcast_id}/episodes", response=List[PodcastEpisodeLightOut], tags=['podcast_episodes'], operation_id='list_podcast_episodes')
+@api.get(
+    "/podcasts/slug/{podcast_slug}",
+    response=PodcastOut,
+    tags=["podcasts"],
+    operation_id="get_podcast_by_slug",
+)
+def get_podcast_by_slug(request, podcast_slug: str):
+    return get_object_or_404(Podcast, slug=podcast_slug, active=True)
+
+
+@api.get(
+    "/podcasts/{podcast_id}/episodes",
+    response=List[PodcastEpisodeLightOut],
+    tags=["podcast_episodes"],
+    operation_id="list_podcast_episodes",
+)
 def list_podcast_episodes(request, podcast_id: int, page: int = 1):
+
+    if not Podcast.objects.filter(id=podcast_id, active=True).exists():
+        return Http404("Podcast not found")
+
+    # get_object_or_404(Podcast, id=podcast_id, active=True)
+    # if not Podcast.objects.exists(id=podcast_id, active=True):
+    # raise Http404("Podcast not found")
+
     podcast_episodes = (
         PodcastEpisode.objects.filter(podcast=podcast_id)
-        .defer('transcription', 'description', 'audio_url', 'details_url')
+        .defer("transcription", "description", "audio_url", "details_url")
         .order_by("-date")
     )
     paginator = Paginator(podcast_episodes, 20)
@@ -144,6 +177,11 @@ def list_podcast_episodes(request, podcast_id: int, page: int = 1):
     return page_obj.object_list
 
 
-@api.get("/podcasts/{podcast_id}/episodes/{episode_id}", response=PodcastEpisodeOut, tags=['podcast_episodes'], operation_id='get_podcast_episode')
+@api.get(
+    "/podcasts/{podcast_id}/episodes/{episode_id}",
+    response=PodcastEpisodeOut,
+    tags=["podcast_episodes"],
+    operation_id="get_podcast_episode",
+)
 def get_podcast_episode(request, podcast_id: int, episode_id: int):
     return PodcastEpisode.objects.filter(podcast=podcast_id, id=episode_id).get()

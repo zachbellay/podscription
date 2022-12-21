@@ -9,7 +9,9 @@ class PodcastOut(Schema):
     name: str
     author: str
     url: str
-
+    logo_url: str
+    description: str
+    website_url: str
 
 class PodcastEpisodeOut(Schema):
     id: int

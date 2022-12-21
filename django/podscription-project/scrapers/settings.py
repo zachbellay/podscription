@@ -9,6 +9,7 @@
 
 import os
 import sys
+import logging
 
 import django
 
@@ -18,12 +19,14 @@ relative_path = "../"
 path_to_django = os.path.abspath(os.path.join(os.path.dirname(__file__), relative_path))
 sys.path.insert(0, path_to_django)
 
+from django.apps import apps
+from django.conf import settings
+
+if not apps.ready and not settings.configured:
+    django.setup()
+
 from api.models import Podcast, PodcastEpisode
 
-# ModuleNotFoundError: No module named 'podscription.api'
-# the way to resolve this issue is to add the path to the django project to the sys.path
-# I already did that and this is still the error I get
-#
 
 BOT_NAME = "scrapers"
 
@@ -38,6 +41,11 @@ NEWSPIDER_MODULE = "scrapers.spiders"
 ROBOTSTXT_OBEY = False
 
 USER_AGENT = None
+
+LOG_STDOUT = True
+LOG_LEVEL='INFO'
+# LOG_FORMATTER = 'apps.crawler.spiders.PoliteLogFormatter'
+LOG_FORMATTER = 'scrapers.formatters.PoliteLogFormatter'
 
 DOWNLOAD_HANDLERS = {
     "http": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",

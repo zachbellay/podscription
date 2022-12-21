@@ -3,8 +3,8 @@ set -e
 
 # Run tests
 cd ./django/podscription-project
-python manage.py migrate
-python manage.py collectstatic --clear --noinput
+# python manage.py migrate
+# python manage.py collectstatic --clear --noinput
 
 echo "Starting celery worker"
 

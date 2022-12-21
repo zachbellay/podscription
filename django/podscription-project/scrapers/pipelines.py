@@ -13,6 +13,7 @@ from threading import Lock
 
 import aiohttp
 import psycopg2
+import django
 import scrapy
 
 # from asgiref.sync import async_to_sync
@@ -121,5 +122,8 @@ class DuplicatesPipeline:
 class SaveToDatabasePipeline:
     async def process_item(self, item, spider):
         save = sync_to_async(item.save)
-        result = await save()
+        try:
+            result = await save()
+        except django.db.utils.IntegrityError:
+            raise DropItem(f"Duplicate item found: {item!r}")
         return result
