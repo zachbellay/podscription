@@ -1,6 +1,6 @@
 django/podscription-project/collectedstatic/
 **/staticfiles/**
-**/static/**
+**/dist/**
 
 .data/
 django/podscription-project/staticfiles

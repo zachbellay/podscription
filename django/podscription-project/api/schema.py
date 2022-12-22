@@ -13,6 +13,7 @@ class PodcastOut(Schema):
     description: str
     website_url: str
 
+
 class PodcastEpisodeOut(Schema):
     id: int
     podcast_name: str
@@ -29,6 +30,10 @@ class PodcastEpisodeLightOut(Schema):
     podcast_name: str
     date: date
     title: str
+    description: str
+    audio_url: str
+    details_url: str
+
 
 class PodcastSearchResultOut(Schema):
     episode_id: int

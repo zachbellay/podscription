@@ -20,6 +20,7 @@ from django.contrib.postgres.search import (
 )
 from django.core.paginator import Paginator
 from django.db.models import F, Value
+from django.http import Http404
 from django.shortcuts import get_object_or_404, render
 
 api = NinjaAPI()
@@ -161,11 +162,7 @@ def get_podcast_by_slug(request, podcast_slug: str):
 def list_podcast_episodes(request, podcast_id: int, page: int = 1):
 
     if not Podcast.objects.filter(id=podcast_id, active=True).exists():
-        return Http404("Podcast not found")
-
-    # get_object_or_404(Podcast, id=podcast_id, active=True)
-    # if not Podcast.objects.exists(id=podcast_id, active=True):
-    # raise Http404("Podcast not found")
+        raise Http404("Podcast not found")
 
     podcast_episodes = (
         PodcastEpisode.objects.filter(podcast=podcast_id)
