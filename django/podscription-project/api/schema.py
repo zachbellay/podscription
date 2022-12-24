@@ -12,6 +12,7 @@ class PodcastOut(Schema):
     logo_url: str
     description: str
     website_url: str
+    slug: str
 
 
 class PodcastEpisodeOut(Schema):
@@ -22,6 +23,7 @@ class PodcastEpisodeOut(Schema):
     description: str
     audio_url: str
     details_url: str
+    slug: str
     transcription: Optional[str]
 
 
@@ -33,6 +35,7 @@ class PodcastEpisodeLightOut(Schema):
     description: str
     audio_url: str
     details_url: str
+    slug: str
 
 
 class PodcastSearchResultOut(Schema):

@@ -13,7 +13,9 @@ import AudioPlayer from '../components/audio-player/AudioPlayer';
 import { APITypes } from "plyr-react";
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { PodcastEpisodeLightOut } from '../adapters/models';
-import PodcastEpisodeItem from '../components/postcast-list/PodcastEpisodeItem';
+import PodcastEpisodeItem from '../components/podcast-list/PodcastEpisodeItem';
+
+
 
 
 // TODO : Make basePath come from env in vite config
@@ -33,54 +35,49 @@ const podcastEpisodesApi = new PodcastEpisodesApi(new Configuration({
 
 
 
-const videoSource = {
-    type: "audio" as const,
-    sources: [
-        {
-            type: "audio/wav",
-            src: "https://dts.podtrac.com/redirect.mp3/chrt.fm/track/8DB4DB/pdst.fm/e/nyt.simplecastaudio.com/03d8b493-87fc-4bd1-931f-8a8e9b945d8a/episodes/cf1f5291-8408-4b4c-bc45-c51f00569d13/audio/128/default.mp3?aid=rss_feed&awCollectionId=03d8b493-87fc-4bd1-931f-8a8e9b945d8a&awEpisodeId=cf1f5291-8408-4b4c-bc45-c51f00569d13&feed=54nAGcIl",
-        },
-    ],
-};
+interface SinglePodcastProps {
+    updateAudioCallback: (source: string) => void;
+}
 
+const SinglePodcast: React.FC<SinglePodcastProps> = ({ updateAudioCallback }) => {
 
-const SinglePodcast = () => {
+    // gets the slug from the url
+    const { podcastSlug } = useParams<string>();
 
-    const { slug } = useParams<string>();
-
+    // current podcast state
     const [podcast, setPodcast] = React.useState<PodcastOut | null>(null);
+
+    // paginated podcasts stored here
     const [podcastEpisodes, setPodcastEpisodes] = React.useState<PodcastEpisodeLightOut[]>([]);
+
+    // pagination state
     const [hasMore, setHasMore] = React.useState(true);
     const [page, setPage] = React.useState(1);
 
 
     const [error, setError] = React.useState<Record<string, string> | null>(null);
-
-
     const ref = React.useRef<APITypes>(null);
 
+    // function to get more data using pagination for podcast episodes
     const fetchMoreData = () => {
 
-        if (!hasMore) {
+        if (!hasMore || !podcast) {
             return;
         }
 
-        podcastEpisodesApi.listPodcastEpisodes({ podcastId: podcast?.id as number, page: page })
+        podcastEpisodesApi.listPodcastEpisodes({ podcastId: podcast.id as number, page: page })
             .then((response) => {
                 if (response.length < 20) {
                     setHasMore(false);
                 }
-                // console.log(response)
-                // podcastEpisodes.concat(response);
                 setPodcastEpisodes([...podcastEpisodes, ...response]);
                 setPage(page + 1);
             });
     };
 
-
-
+    // initialize the podcast that is being viewed
     React.useEffect(() => {
-        podcastsApi.getPodcastBySlug({ podcastSlug: slug as string })
+        podcastsApi.getPodcastBySlug({ podcastSlug: podcastSlug as string })
             .then((response) => {
                 setPodcast(response);
             })
@@ -89,8 +86,9 @@ const SinglePodcast = () => {
                 setError({ code: statusCode, message: statusText })
 
             });
-    }, [slug]);
+    }, [podcastSlug]);
 
+    // get the first page of podcast episodes
     React.useEffect(() => {
         fetchMoreData();
     }, [podcast]);
@@ -117,8 +115,6 @@ const SinglePodcast = () => {
                         </div>
                         <div className="p-4 md:w-2/3">
 
-
-
                             <h1 className="text-2xl font-semibold dark:text-white">{podcast.name}</h1>
                             <p className="font-light text-sm text-gray-800 dark:text-gray-400">{podcast.author}</p>
 
@@ -137,11 +133,8 @@ const SinglePodcast = () => {
 
                             <p className="dark:text-gray-300">{podcast.description}</p>
 
-
-
                         </div>
                     </div>
-
 
                     <div className="flex flex-wrap mt-8">
 
@@ -154,14 +147,19 @@ const SinglePodcast = () => {
                             loader={<h4 className="dark:text-white">Loading...</h4>}
                             endMessage={
                                 <p style={{ textAlign: 'center' }}>
-                                    <b>Yay! You have seen it all</b>
+                                    <b>Yay! You found the last podcast episode!</b>
                                 </p>
                             }
                         >
                             {podcastEpisodes && podcastEpisodes.map((episode, index) => (
                                 <div>
                                     <div className="h-px relative w-full bg-slate-500 my-1"></div>
-                                    <PodcastEpisodeItem key={index} episode={episode} />
+                                    <PodcastEpisodeItem
+                                        itemKey={String(episode.id)}
+                                        episode={episode}
+                                        podcast={podcast}
+                                        updateAudioCallback={updateAudioCallback}
+                                    />
                                 </div>
                             ))}
                         </InfiniteScroll>
@@ -171,20 +169,6 @@ const SinglePodcast = () => {
 
             )}
 
-
-
-
-            {/* <div className="wrapper" >
-                <Button onClick={() => console.log(podcastEpisodes)}>dsa</Button>
-                <Button onClick={() => ref.current?.plyr.play()}>Play</Button>
-                <Button onClick={() => ref.current?.plyr.pause()}>Pause</Button>
-                {videoSource && (
-                    <AudioPlayer
-                        ref={ref}
-                        source={videoSource}
-                    />
-                )}
-            </div> */}
         </div >
     );
 };

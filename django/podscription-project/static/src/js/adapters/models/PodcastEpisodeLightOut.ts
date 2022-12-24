@@ -61,6 +61,12 @@ export interface PodcastEpisodeLightOut {
      * @memberof PodcastEpisodeLightOut
      */
     detailsUrl: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PodcastEpisodeLightOut
+     */
+    slug: string;
 }
 
 /**
@@ -75,6 +81,7 @@ export function instanceOfPodcastEpisodeLightOut(value: object): boolean {
     isInstance = isInstance && "description" in value;
     isInstance = isInstance && "audioUrl" in value;
     isInstance = isInstance && "detailsUrl" in value;
+    isInstance = isInstance && "slug" in value;
 
     return isInstance;
 }
@@ -96,6 +103,7 @@ export function PodcastEpisodeLightOutFromJSONTyped(json: any, ignoreDiscriminat
         'description': json['description'],
         'audioUrl': json['audio_url'],
         'detailsUrl': json['details_url'],
+        'slug': json['slug'],
     };
 }
 
@@ -115,6 +123,7 @@ export function PodcastEpisodeLightOutToJSON(value?: PodcastEpisodeLightOut | nu
         'description': value.description,
         'audio_url': value.audioUrl,
         'details_url': value.detailsUrl,
+        'slug': value.slug,
     };
 }
 

@@ -45,7 +45,7 @@ module.exports = {
       ]
     }
   },
-  darkMode: 'media',
+  darkMode: 'class',
   plugins: [require('flowbite/plugin')],
 }
 

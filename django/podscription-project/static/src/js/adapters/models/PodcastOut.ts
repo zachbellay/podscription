@@ -61,6 +61,12 @@ export interface PodcastOut {
      * @memberof PodcastOut
      */
     websiteUrl: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PodcastOut
+     */
+    slug: string;
 }
 
 /**
@@ -75,6 +81,7 @@ export function instanceOfPodcastOut(value: object): boolean {
     isInstance = isInstance && "logoUrl" in value;
     isInstance = isInstance && "description" in value;
     isInstance = isInstance && "websiteUrl" in value;
+    isInstance = isInstance && "slug" in value;
 
     return isInstance;
 }
@@ -96,6 +103,7 @@ export function PodcastOutFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         'logoUrl': json['logo_url'],
         'description': json['description'],
         'websiteUrl': json['website_url'],
+        'slug': json['slug'],
     };
 }
 
@@ -115,6 +123,7 @@ export function PodcastOutToJSON(value?: PodcastOut | null): any {
         'logo_url': value.logoUrl,
         'description': value.description,
         'website_url': value.websiteUrl,
+        'slug': value.slug,
     };
 }
 

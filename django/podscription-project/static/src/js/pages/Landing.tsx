@@ -5,7 +5,7 @@ import Search from '../components/search/Search';
 
 const Landing = () => {
     return (
-        <div className="h-screen">
+        <div className="h-screen overflow-hidden">
             <Header />
             <Hero>
                 <Search placeholder="Search podcasts, episodes..." />

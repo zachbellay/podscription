@@ -66,6 +66,12 @@ export interface PodcastEpisodeOut {
      * @type {string}
      * @memberof PodcastEpisodeOut
      */
+    slug: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PodcastEpisodeOut
+     */
     transcription?: string;
 }
 
@@ -81,6 +87,7 @@ export function instanceOfPodcastEpisodeOut(value: object): boolean {
     isInstance = isInstance && "description" in value;
     isInstance = isInstance && "audioUrl" in value;
     isInstance = isInstance && "detailsUrl" in value;
+    isInstance = isInstance && "slug" in value;
 
     return isInstance;
 }
@@ -102,6 +109,7 @@ export function PodcastEpisodeOutFromJSONTyped(json: any, ignoreDiscriminator: b
         'description': json['description'],
         'audioUrl': json['audio_url'],
         'detailsUrl': json['details_url'],
+        'slug': json['slug'],
         'transcription': !exists(json, 'transcription') ? undefined : json['transcription'],
     };
 }
@@ -122,6 +130,7 @@ export function PodcastEpisodeOutToJSON(value?: PodcastEpisodeOut | null): any {
         'description': value.description,
         'audio_url': value.audioUrl,
         'details_url': value.detailsUrl,
+        'slug': value.slug,
         'transcription': value.transcription,
     };
 }

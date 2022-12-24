@@ -31,13 +31,13 @@ const AudioPlayer = React.forwardRef<APITypes, PlyrProps>(
             if (current.plyr.source === null) return;
 
             const api = current as { plyr: PlyrInstance };
-            api.plyr.on("ready", () => console.log("I'm ready"));
+            // api.plyr.on("ready", () => console.log("I'm ready"));
             api.plyr.on("canplay", () => {
                 // NOTE: browser may pause you from doing so:  https://goo.gl/xX8pDD
-                // api.plyr.play();
-                console.log("duration of audio is", api.plyr.duration);
+                api.plyr.play();
+                // console.log("duration of audio is", api.plyr.duration);
             });
-            api.plyr.on("ended", () => console.log("I'm Ended"));
+            // api.plyr.on("ended", () => console.log("I'm Ended"));
         });
 
         return (
@@ -48,5 +48,7 @@ const AudioPlayer = React.forwardRef<APITypes, PlyrProps>(
         );
     }
 );
+
+
 
 export default AudioPlayer;
