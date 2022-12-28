@@ -1,5 +1,5 @@
 from datetime import date
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from ninja import Schema
 
@@ -21,10 +21,12 @@ class PodcastEpisodeOut(Schema):
     date: date
     title: str
     description: str
-    audio_url: str
+    # audio_url: str
+    resolved_audio_url: str
     details_url: str
     slug: str
-    transcription: Optional[str]
+    duration: int
+    transcription: Optional[List[Dict[str, str]]]
 
 
 class PodcastEpisodeLightOut(Schema):
@@ -33,9 +35,11 @@ class PodcastEpisodeLightOut(Schema):
     date: date
     title: str
     description: str
-    audio_url: str
+    # audio_url: str
+    resolved_audio_url: str
     details_url: str
     slug: str
+    duration: int
 
 
 class PodcastSearchResultOut(Schema):

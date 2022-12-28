@@ -40,6 +40,7 @@ class Command(BaseCommand):
             logo_url=podcast_image,
             description=description,
             website_url=website_url,
+            is_rss=False,
         )
         podcast.save()
 

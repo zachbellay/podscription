@@ -1,13 +1,40 @@
-from django.contrib import admin
-from rangefilter.filters import DateRangeFilter
 import requests
 from bs4 import BeautifulSoup
+from rangefilter.filters import DateRangeFilter
+
+from django.contrib import admin
 
 from .models import Podcast, PodcastEpisode
-from .tasks import run_spider
+from .tasks import (
+    group_podcast_episode_transcript,
+    read_rss_feed,
+    run_spider,
+    transcribe_podcast_episode,
+)
 
-# import api.tasks
-# Register your models here.
+
+@admin.action(description="Read RSS feed for selected podcasts")
+def read_selected_rss_feeds(modeladmin, request, queryset):
+    for podcast in queryset:
+        read_rss_feed.delay(podcast.id)
+
+    # read_rss_feeds.delay(list(queryset))
+
+
+@admin.action(description="Re-run transcription on selected episodes")
+def retranscribe_selected(modeladmin, request, queryset):
+    for episode in queryset:
+        episode.clear_transcriptions()
+        transcribe_podcast_episode.delay(episode.id)
+
+
+@admin.action(description="Re-run transcription grouping on selected episodes")
+def rerun_transcription_grouping(modeladmin, request, queryset):
+    for episode in queryset:
+        episode.transcription = None
+        episode.save()
+        group_podcast_episode_transcript.delay(episode.id)
+
 
 @admin.action(description="Run spider on selected podcasts")
 def run_spider_on_selected(modeladmin, request, queryset):
@@ -38,27 +65,31 @@ def update_select_podcasts(modeladmin, request, queryset):
         print(f"Image: {podcast_image}")
         print(f"Website: {website_url}")
 
-        success = Podcast.objects.filter(url=podcast.url).update(**{
-            'name':title,
-            'author':author,
-            'url': podcast.url,
-            'logo_url':podcast_image,
-            'description':description,
-            'website_url':website_url    
+        success = Podcast.objects.filter(url=podcast.url).update(
+            **{
+                "name": title,
+                "author": author,
+                "url": podcast.url,
+                "logo_url": podcast_image,
+                "description": description,
+                "website_url": website_url,
             }
         )
-        
+
         if success:
-            print('Successfully updated podcast')
+            print("Successfully updated podcast")
         else:
-            print('Failed to update podcast')
-
-
+            print("Failed to update podcast")
 
 
 class PodcastAdmin(admin.ModelAdmin):
     list_display = ("name", "author", "url")
-    actions = [run_spider_on_selected, update_select_podcasts]
+    actions = [
+        run_spider_on_selected,
+        update_select_podcasts,
+        read_selected_rss_feeds,
+    ]
+
 
 class PodcastEpisodeAdmin(admin.ModelAdmin):
     list_display = (
@@ -67,10 +98,20 @@ class PodcastEpisodeAdmin(admin.ModelAdmin):
         "title",
     )
 
+    ordering = ("-date",)
+
+    actions = [
+        retranscribe_selected,
+        rerun_transcription_grouping,
+    ]
+
     search_fields = ("title", "podcast__name", "podcast__author")
 
-    list_filter = (('date', DateRangeFilter),)
-    
+    list_filter = (
+        ("date", DateRangeFilter),
+        ("transcription", admin.EmptyFieldListFilter),
+    )
+
 
 admin.site.register(Podcast, PodcastAdmin)
 admin.site.register(PodcastEpisode, PodcastEpisodeAdmin)

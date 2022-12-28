@@ -22,16 +22,18 @@ const Header = () => {
             fluid={true}
             rounded={false}
         >
-            <Navbar.Brand href="https://podscription.app/">
-                <img
-                    src="https://flowbite.com/docs/images/logo.svg"
-                    className="mr-3 h-6 sm:h-9 "
-                    alt="Podscription Logo"
-                />
-                <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
-                    Podscription
-                </span>
-            </Navbar.Brand>
+            <Link to="/">
+                <Navbar.Brand>
+                    <img
+                        src="https://flowbite.com/docs/images/logo.svg"
+                        className="mr-3 h-6 sm:h-9 "
+                        alt="Podscription Logo"
+                    />
+                    <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
+                        Podscription
+                    </span>
+                </Navbar.Brand>
+            </Link>
             <Navbar.Toggle />
 
             <Navbar.Collapse >

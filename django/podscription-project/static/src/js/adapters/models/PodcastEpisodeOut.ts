@@ -54,7 +54,7 @@ export interface PodcastEpisodeOut {
      * @type {string}
      * @memberof PodcastEpisodeOut
      */
-    audioUrl: string;
+    resolvedAudioUrl: string;
     /**
      * 
      * @type {string}
@@ -69,10 +69,16 @@ export interface PodcastEpisodeOut {
     slug: string;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof PodcastEpisodeOut
      */
-    transcription?: string;
+    duration: number;
+    /**
+     * 
+     * @type {Array<{ [key: string]: string; }>}
+     * @memberof PodcastEpisodeOut
+     */
+    transcription?: Array<{ [key: string]: string; }>;
 }
 
 /**
@@ -85,9 +91,10 @@ export function instanceOfPodcastEpisodeOut(value: object): boolean {
     isInstance = isInstance && "date" in value;
     isInstance = isInstance && "title" in value;
     isInstance = isInstance && "description" in value;
-    isInstance = isInstance && "audioUrl" in value;
+    isInstance = isInstance && "resolvedAudioUrl" in value;
     isInstance = isInstance && "detailsUrl" in value;
     isInstance = isInstance && "slug" in value;
+    isInstance = isInstance && "duration" in value;
 
     return isInstance;
 }
@@ -107,9 +114,10 @@ export function PodcastEpisodeOutFromJSONTyped(json: any, ignoreDiscriminator: b
         'date': (new Date(json['date'])),
         'title': json['title'],
         'description': json['description'],
-        'audioUrl': json['audio_url'],
+        'resolvedAudioUrl': json['resolved_audio_url'],
         'detailsUrl': json['details_url'],
         'slug': json['slug'],
+        'duration': json['duration'],
         'transcription': !exists(json, 'transcription') ? undefined : json['transcription'],
     };
 }
@@ -128,9 +136,10 @@ export function PodcastEpisodeOutToJSON(value?: PodcastEpisodeOut | null): any {
         'date': (value.date.toISOString().substr(0,10)),
         'title': value.title,
         'description': value.description,
-        'audio_url': value.audioUrl,
+        'resolved_audio_url': value.resolvedAudioUrl,
         'details_url': value.detailsUrl,
         'slug': value.slug,
+        'duration': value.duration,
         'transcription': value.transcription,
     };
 }

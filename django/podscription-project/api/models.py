@@ -17,6 +17,7 @@ class Podcast(models.Model):
     website_url = models.CharField(max_length=2048, null=False, blank=False)
     slug = models.SlugField(max_length=250, null=True, blank=True)
     active = models.BooleanField(default=True)
+    is_rss = models.BooleanField(default=True)
 
     class Meta:
         constraints = [
@@ -30,6 +31,13 @@ class Podcast(models.Model):
         return f"{self.name} by {self.author}"
 
 
+class WhisperModelSize(models.TextChoices):
+    TINY = "tiny", "tiny"
+    BASE = "base", "base"
+    SMALL = "small", "small"
+    MEDIUM = "medium", "medium"
+    LARGE = "large", "large"
+
 class PodcastEpisode(models.Model):
     podcast = models.ForeignKey(Podcast, on_delete=models.CASCADE)
     podcast_name = models.CharField(max_length=100, null=False, blank=False)
@@ -37,8 +45,17 @@ class PodcastEpisode(models.Model):
     title = models.CharField(max_length=200, null=False)
     description = models.TextField(null=False)
     audio_url = models.CharField(max_length=2048, null=False, blank=False)
+    resolved_audio_url = models.CharField(max_length=2048, null=False, blank=False)
     details_url = models.CharField(max_length=2048, null=False, blank=False)
-    transcription = models.TextField(default=None, null=True, blank=True)
+    transcription = models.JSONField(default=None, null=True, blank=True)
+    transcription_full_text = models.TextField(blank=True, default=None, null=True)
+    whisper_model_size = models.CharField(
+        max_length=10,
+        choices=WhisperModelSize.choices,
+        default=WhisperModelSize.BASE,
+    )
+    whisper_transcription_object = models.JSONField(default=None, null=True, blank=True)
+    duration = models.PositiveIntegerField(default=None, null=True, blank=True)
     slug = models.SlugField(max_length=250, null=True, blank=True)
     search_vector = SearchVectorField(null=True)
 
@@ -55,6 +72,11 @@ class PodcastEpisode(models.Model):
 
     def __str__(self):
         return f"{self.podcast.name} - {self.title} - {self.date}"
+
+    def clear_transcriptions(self):
+        self.transcription = None
+        self.whisper_transcription_object = None
+        self.save()
 
 
 def pre_save_receiver(sender, instance, *args, **kwargs):

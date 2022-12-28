@@ -5,16 +5,11 @@ import LinesEllipsis from 'react-lines-ellipsis'
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC'
 import { PodcastEpisodeLightOut, PodcastOut } from '../../adapters/models';
 import { Link } from 'react-router-dom';
+import { formatDate } from '../../utils';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis)
 
-function formatDate(date) {
-    const dayOfWeek = date.toLocaleString('default', { weekday: 'long' });
-    const month = date.toLocaleString('default', { month: 'long' });
-    const day = date.getDate();
-    const year = date.getFullYear();
-    return `${dayOfWeek} ${month} ${day}, ${year}`;
-}
+
 
 // create interface for props
 interface PodcastEpisodeItemProps {
@@ -29,20 +24,24 @@ const PodcastEpisodeItem = (props: PodcastEpisodeItemProps) => {
 
     return (
         <div className="flex flex-col w-full h-full mb-4" key={props.itemKey}>
-            <h4 className="font-medium dark:text-white">{props.episode.title}</h4>
-            <p className="text-sm text-slate-500 dark:text-slate-200">{formatDate(props.episode.date)}</p>
+            <Link to={`/podcast/${props.podcast.slug}/episode/${props.episode.slug}`}>
+                <h4 className="font-medium dark:text-white">{props.episode.title}</h4>
+                <p className="text-sm text-slate-500 dark:text-slate-200">{formatDate(props.episode.date)} | {Math.floor(props.episode.duration / 60)}m {props.episode.duration % 60}s</p>
+            </Link>
             <div className="flex flex-wrap">
-                <LinesEllipsis className="text-sm dark:text-white"
-                    text={props.episode.description}
-                    maxLine='3'
-                    ellipsis='...'
-                    trimRight
-                    basedOn='words'
-                />
+                <Link to={`/podcast/${props.podcast.slug}/episode/${props.episode.slug}`}>
+                    <LinesEllipsis className="text-sm dark:text-white"
+                        text={props.episode.description}
+                        maxLine='3'
+                        ellipsis='...'
+                        trimRight
+                        basedOn='words'
+                    />
+                </Link>
 
                 <div className="flex flex-row mt-2">
 
-                    <Button onClick={() => props.updateAudioCallback(props.episode.audioUrl)} size="xs" outline={true} color='gray'
+                    <Button onClick={() => props.updateAudioCallback(props.episode.resolvedAudioUrl)} size="xs" outline={true} color='gray'
                         pill={true} className="mr-2">
                         <HiPlay className="mr-2 h-5 w-5" />
                         Play

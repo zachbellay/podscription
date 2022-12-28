@@ -5,6 +5,7 @@ import { SearchApi } from '../adapters/apis/SearchApi';
 import { Configuration } from '../adapters/runtime';
 import { useLocation } from 'react-router-dom';
 import { PodcastSearchResultOut } from '../adapters/models/PodcastSearchResultOut';
+import Search from '../components/search/Search';
 
 
 // TODO : Make basePath come from env in vite config
@@ -32,20 +33,23 @@ const SearchResults = () => {
 
     }, [query]);
 
-
     return (
-        <div>
+
+        <div className="h-screen">
             <Header />
-            Search Results for "{query}"
-            {results.map((result) => {
-                return (
-                    <div>
-                        <p>{result.headline}</p>
-                        <br />
-                    </div>
-                );
-            })
-            }
+            <div className="container min-w-full sm:px-24 min-h-full dark:bg-slate-800">
+
+                <Search placeholder={"Search podcasts, episodes..."} query={query} />
+                {results.map((result) => {
+                    return (
+                        <div>
+                            <p>{result.headline}</p>
+                            <br />
+                        </div>
+                    );
+                })
+                }
+            </div>
         </div >
     );
 };

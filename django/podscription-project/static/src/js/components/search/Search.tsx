@@ -3,13 +3,13 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 
-const HeroSearch = (props) => {
+const Search = (props) => {
     const navigate = useNavigate();
-    const [query, setQuery] = useState('');
+    const [query, setQuery] = useState(props.query || '');
 
     const onSubmit = (event) => {
         event.preventDefault();
-        navigate(('search?q=' + query), { replace: false });
+        navigate(('/search?q=' + encodeURIComponent(query)), { replace: false });
     };
 
     return (
@@ -26,4 +26,4 @@ const HeroSearch = (props) => {
     );
 };
 
-export default HeroSearch;
+export default Search;

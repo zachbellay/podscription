@@ -16,6 +16,8 @@ function App() {
   const ref = React.useRef<APITypes>(null);
   const [audioSource, setAudioSource] = React.useState<PlyrSource | null>(null);
 
+  const [location, setLocation] = React.useState<number | null>(null);
+
   // install event listener to pause if space bar is pressed
   React.useEffect(() => {
     const handleKeyPresses = (e: KeyboardEvent) => {
@@ -85,9 +87,17 @@ function App() {
   }, [window])
 
 
-  const updateAudioSourceCallback = (source: string) => {
+  const updateAudioSourceCallback = (source: string, location?: number | null) => {
     const { current } = ref as React.MutableRefObject<APITypes>;
     const api = current as { plyr: PlyrInstance };
+
+    // dirty hack that adds a random number to the location to ensure that the audio player updates
+    const randomNoise = Math.random() * 0.04 + 0.01;
+
+    // ensure that location is not null or undefined, but location could be 0
+    if (location !== null && location !== undefined) {
+      setLocation(location + randomNoise);
+    }
 
     // if the audio source is the same, just play it
     if (audioSource && source === audioSource.sources[0].src) {
@@ -105,22 +115,13 @@ function App() {
       ],
     })
 
-    // React.useEffect(() => {
-    api.plyr.play()
-    // }, [api.plyr])
 
 
-    // api.plyr.on("ready", () => {
-    //   console.log("I'm ready")
-    //   // api.plyr.play()
-    // });
-    // api.plyr.on("canplay", () => {
-    //   // NOTE: browser may pause you from doing so:  https://goo.gl/xX8pDD
-    //   api.plyr.play();
-    //   console.log("duration of audio is", api.plyr.duration);
-    // });
-    // api.plyr.on("ended", () => console.log("I'm Ended"));
   }
+
+
+
+
 
   return (
     <BrowserRouter>
@@ -130,6 +131,7 @@ function App() {
           <AudioPlayer
             ref={ref}
             source={audioSource}
+            location={location}
           />
         )}
       </div>

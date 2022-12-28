@@ -8,14 +8,12 @@ import { Configuration } from '../adapters/runtime';
 import { PodcastOut } from '../adapters/models/PodcastOut';
 import { Button } from 'flowbite-react/lib/cjs/components/Button';
 import { HiGlobeAlt, HiSpeakerphone } from 'react-icons/hi';
-import AudioPlayer from '../components/audio-player/AudioPlayer';
-//////////
 import { APITypes } from "plyr-react";
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { PodcastEpisodeLightOut } from '../adapters/models';
 import PodcastEpisodeItem from '../components/podcast-list/PodcastEpisodeItem';
-
-
+import Loader from '../components/loader/Loader';
+import EndMessage from '../components/end-message/EndMessage';
 
 
 // TODO : Make basePath come from env in vite config
@@ -45,7 +43,8 @@ const SinglePodcast: React.FC<SinglePodcastProps> = ({ updateAudioCallback }) =>
     const { podcastSlug } = useParams<string>();
 
     // current podcast state
-    const [podcast, setPodcast] = React.useState<PodcastOut | null>(null);
+    const [podcast, setPodcast] = React.useState<PodcastOut>();
+
 
     // paginated podcasts stored here
     const [podcastEpisodes, setPodcastEpisodes] = React.useState<PodcastEpisodeLightOut[]>([]);
@@ -93,6 +92,12 @@ const SinglePodcast: React.FC<SinglePodcastProps> = ({ updateAudioCallback }) =>
         fetchMoreData();
     }, [podcast]);
 
+    React.useEffect(() => {
+        if (podcast) {
+            document.title = `Podscription - ${podcast.name}`;
+        }
+    }, [podcast]);
+
     if (error) {
         return (
             <div className="h-screen">
@@ -124,10 +129,7 @@ const SinglePodcast: React.FC<SinglePodcastProps> = ({ updateAudioCallback }) =>
                                     <HiGlobeAlt className="mr-2 h-5 w-5" />
                                     Website
                                 </Button>
-                                <Button size="xs" outline={true} color='gray' pill={true} href={podcast.url}>
-                                    <HiSpeakerphone className="mr-2 h-5 w-5" />
-                                    Google Podcasts
-                                </Button>
+
 
                             </div>
 
@@ -136,19 +138,18 @@ const SinglePodcast: React.FC<SinglePodcastProps> = ({ updateAudioCallback }) =>
                         </div>
                     </div>
 
-                    <div className="flex flex-wrap mt-8">
-
-                        <h3 className="text-xl font-semibold dark:text-white mb-2">Podcast Episodes</h3>
+                    <h3 className="text-xl font-semibold dark:text-white mt-8 mb-2">Podcast Episodes</h3>
+                    <div className="flex flex-wrap">
 
                         <InfiniteScroll
                             dataLength={podcastEpisodes.length} //This is important field to render the next data
                             next={fetchMoreData}
                             hasMore={hasMore}
-                            loader={<h4 className="dark:text-white">Loading...</h4>}
+                            loader={
+                                <Loader />
+                            }
                             endMessage={
-                                <p style={{ textAlign: 'center' }}>
-                                    <b>Yay! You found the last podcast episode!</b>
-                                </p>
+                                <EndMessage />
                             }
                         >
                             {podcastEpisodes && podcastEpisodes.map((episode, index) => (

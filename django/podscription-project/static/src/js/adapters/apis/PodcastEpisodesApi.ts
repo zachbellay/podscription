@@ -26,8 +26,8 @@ import {
 } from '../models';
 
 export interface GetPodcastEpisodeRequest {
-    podcastId: number;
-    episodeId: number;
+    podcastSlug: string;
+    episodeSlug: string;
 }
 
 export interface ListPodcastEpisodesRequest {
@@ -44,12 +44,12 @@ export class PodcastEpisodesApi extends runtime.BaseAPI {
      * Get Podcast Episode
      */
     async getPodcastEpisodeRaw(requestParameters: GetPodcastEpisodeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PodcastEpisodeOut>> {
-        if (requestParameters.podcastId === null || requestParameters.podcastId === undefined) {
-            throw new runtime.RequiredError('podcastId','Required parameter requestParameters.podcastId was null or undefined when calling getPodcastEpisode.');
+        if (requestParameters.podcastSlug === null || requestParameters.podcastSlug === undefined) {
+            throw new runtime.RequiredError('podcastSlug','Required parameter requestParameters.podcastSlug was null or undefined when calling getPodcastEpisode.');
         }
 
-        if (requestParameters.episodeId === null || requestParameters.episodeId === undefined) {
-            throw new runtime.RequiredError('episodeId','Required parameter requestParameters.episodeId was null or undefined when calling getPodcastEpisode.');
+        if (requestParameters.episodeSlug === null || requestParameters.episodeSlug === undefined) {
+            throw new runtime.RequiredError('episodeSlug','Required parameter requestParameters.episodeSlug was null or undefined when calling getPodcastEpisode.');
         }
 
         const queryParameters: any = {};
@@ -57,7 +57,7 @@ export class PodcastEpisodesApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/v1/podcasts/{podcast_id}/episodes/{episode_id}`.replace(`{${"podcast_id"}}`, encodeURIComponent(String(requestParameters.podcastId))).replace(`{${"episode_id"}}`, encodeURIComponent(String(requestParameters.episodeId))),
+            path: `/api/v1/podcasts/{podcast_slug}/episodes/{episode_slug}`.replace(`{${"podcast_slug"}}`, encodeURIComponent(String(requestParameters.podcastSlug))).replace(`{${"episode_slug"}}`, encodeURIComponent(String(requestParameters.episodeSlug))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
