@@ -138,7 +138,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/about" element={<About />} />
-        <Route path="/search" element={<SearchResults />} />
+        <Route path="/search" element={<SearchResults updateAudioCallback={updateAudioSourceCallback} />} />
         <Route path="/podcast/all" element={<PodcastAll />} />
         <Route path="/podcast/:podcastSlug" element={<SinglePodcast updateAudioCallback={updateAudioSourceCallback} />} />
         <Route path="/podcast/:podcastSlug/episode/:episodeSlug" element={<SingleEpisode updateAudioCallback={updateAudioSourceCallback} />} />

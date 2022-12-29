@@ -5,7 +5,7 @@ import LinesEllipsis from 'react-lines-ellipsis'
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC'
 import { PodcastEpisodeLightOut, PodcastOut } from '../../adapters/models';
 import { Link } from 'react-router-dom';
-import { formatDate } from '../../utils';
+import { formatDate, formatSeconds } from '../../utils';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis)
 
@@ -18,15 +18,14 @@ interface PodcastEpisodeItemProps {
     updateAudioCallback: (source: string) => void
     itemKey: string
 }
-// const PodcastEpisodeItem = (props) => {
-// // refactor to use prop interface
+
 const PodcastEpisodeItem = (props: PodcastEpisodeItemProps) => {
 
     return (
         <div className="flex flex-col w-full h-full mb-4" key={props.itemKey}>
             <Link to={`/podcast/${props.podcast.slug}/episode/${props.episode.slug}`}>
                 <h4 className="font-medium dark:text-white">{props.episode.title}</h4>
-                <p className="text-sm text-slate-500 dark:text-slate-200">{formatDate(props.episode.date)} | {Math.floor(props.episode.duration / 60)}m {props.episode.duration % 60}s</p>
+                <p className="text-sm text-slate-500 dark:text-slate-200">{formatDate(props.episode.date)} | {formatSeconds(props.episode.duration)}</p>
             </Link>
             <div className="flex flex-wrap">
                 <Link to={`/podcast/${props.podcast.slug}/episode/${props.episode.slug}`}>

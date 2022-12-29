@@ -21,7 +21,6 @@ class PodcastEpisodeOut(Schema):
     date: date
     title: str
     description: str
-    # audio_url: str
     resolved_audio_url: str
     details_url: str
     slug: str
@@ -35,14 +34,28 @@ class PodcastEpisodeLightOut(Schema):
     date: date
     title: str
     description: str
-    # audio_url: str
     resolved_audio_url: str
     details_url: str
     slug: str
     duration: int
 
 
-class PodcastSearchResultOut(Schema):
-    episode_id: int
+class PodcastEpisodeSearchResultOut(Schema):
+    id: int
+    podcast_name: str
     podcast: PodcastOut
+    date: date
+    title: str
+    description: str
+    resolved_audio_url: str
+    details_url: str
+    slug: str
+    duration: int
     headline: str
+
+
+# class SearchResultOut(Schema):
+# pass
+# episode_id: int
+# podcast: PodcastOut
+# headline: str

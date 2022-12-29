@@ -5,7 +5,7 @@ apis/index.ts
 index.ts
 models/PodcastEpisodeLightOut.ts
 models/PodcastEpisodeOut.ts
+models/PodcastEpisodeSearchResultOut.ts
 models/PodcastOut.ts
-models/PodcastSearchResultOut.ts
 models/index.ts
 runtime.ts

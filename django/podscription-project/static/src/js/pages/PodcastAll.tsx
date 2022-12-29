@@ -85,11 +85,12 @@ const PodcastAll = () => {
                 >
                     <div className="grid md:grid-cols-4 gap-1">
                         {podcasts && podcasts.map((podcast, index) => (
-
-                            <PodcastItem
-                                itemKey={String(podcast.id)}
-                                podcast={podcast}
-                            />
+                            <div className="col-span-1">
+                                <PodcastItem
+                                    itemKey={String(podcast.id)}
+                                    podcast={podcast}
+                                />
+                            </div>
 
                         ))
                         }

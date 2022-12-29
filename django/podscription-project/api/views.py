@@ -1,11 +1,12 @@
+from itertools import chain
 from typing import List
 
 from api.models import Podcast, PodcastEpisode
 from api.schema import (
     PodcastEpisodeLightOut,
     PodcastEpisodeOut,
+    PodcastEpisodeSearchResultOut,
     PodcastOut,
-    PodcastSearchResultOut,
 )
 from ninja import NinjaAPI
 from ninja.errors import HttpError
@@ -41,91 +42,60 @@ api = NinjaAPI()
 #     ).filter(similarity__gt=0.3, transcription__isnull=False).order_by('-similarity')
 #     return list(podcasts) + list(episodes)
 
+from typing import Dict, Union
+
 
 @api.get(
-    "/search",
-    response=List[PodcastSearchResultOut],
+    "/search/podcasts",
+    response=List[PodcastOut],
     tags=["search"],
-    operation_id="search",
+    operation_id="search_podcasts",
 )
-def search(request, q: str):
+def search_podcasts(request, q: str):
     query = q
 
-    podcasts = list(
+    podcast_by_name = (
         Podcast.objects.annotate(similarity=TrigramSimilarity("name", q))
         .filter(similarity__gt=0.3)
         .order_by("-similarity")
     )
 
-    podcasts += list(
+    podcast_by_author = (
         Podcast.objects.annotate(similarity=TrigramSimilarity("author", q))
         .filter(similarity__gt=0.3)
         .order_by("-similarity")
     )
 
-    print(podcasts)
-    for p in set(podcasts):
-        print(p.name, p.similarity)
+    #  combine the two queries and sort by similarity
+    podcast_results = sorted(
+        chain(podcast_by_name, podcast_by_author),
+        key=lambda x: x.similarity,
+        reverse=True,
+    )[:3]
+    return podcast_results
 
-    # TODO: Look into how to handle the case where a transcript hasn't been generated
-    # but there is a match in the description. Should I show the description?
+
+@api.get(
+    "/search/episodes",
+    response=List[PodcastEpisodeSearchResultOut],
+    tags=["search"],
+    operation_id="search_episodes",
+)
+def search_podcasts(request, q: str):
+    query = q
 
     search_query = SearchQuery(query)
     search_headline = SearchHeadline(
-        "transcription_full_text",
-        search_query,
-        min_words=40,
-        max_words=60
-        # start_sel="",
-        # stop_sel="",
-        # highlight_all=True,
+        "transcription_full_text", search_query, min_words=40, max_words=60
     )
 
-    # podcast_search_results = (
-    #     PodcastEpisode.objects.filter(
-    #         search_vector=search_query,
-    #     ).annotate(headline=search_headline)
-    #     # .annotate(rank=SearchRank(SearchVector("transcription"), search_query))
-    #     # .order_by("-rank")
-    # )[:10]
-
-    # print(podcast_search_results)
-
-    # for p in podcast_search_results:
-    #     print(p.rank)
-
-    # description_search_results = (
-    # PodcastEpisode.objects.annotate(
-    #     search_description=SearchVector('description'),
-    #     rank=SearchRank(SearchVector('description'), SearchQuery('elon musk'))
-    # ).annotate(headline=SearchHeadline('description', SearchQuery('elon musk'))).filter(rank__gt=0.1).order_by('-date').first().description
-
-    # query to search podcasts by name
-    # Podcast.objects.annotate(headline=SearchHeadline('name', 'the daily'))
-    # Podcast.objects.annotate(rank=SearchRank(SearchVector('name'), SearchQuery('today explained')))
-
-    # podcast_search_results = (
-    #     PodcastEpisode.objects.filter(search_vector=search_query, transcription__isnull=False)
-    #     .annotate(rank=SearchRank(SearchVector('transcription'), search_query))
-    #     .order_by("-rank")
-    # )[:10]
-
-    podcast_search_results = (
+    podcast_episode_results = (
         PodcastEpisode.objects.annotate(headline=search_headline)
         .filter(search_vector=search_query, transcription__isnull=False)
         .order_by("-date")
     )[:10]
 
-    results = [
-        PodcastSearchResultOut(
-            episode_id=podcast_episode.id,
-            podcast=podcast_episode.podcast,
-            headline=podcast_episode.headline,
-        )
-        for podcast_episode in podcast_search_results
-    ]
-
-    return results
+    return podcast_episode_results
 
 
 @api.get(

@@ -15,14 +15,21 @@
 
 import * as runtime from '../runtime';
 import type {
-  PodcastSearchResultOut,
+  PodcastEpisodeSearchResultOut,
+  PodcastOut,
 } from '../models';
 import {
-    PodcastSearchResultOutFromJSON,
-    PodcastSearchResultOutToJSON,
+    PodcastEpisodeSearchResultOutFromJSON,
+    PodcastEpisodeSearchResultOutToJSON,
+    PodcastOutFromJSON,
+    PodcastOutToJSON,
 } from '../models';
 
-export interface SearchRequest {
+export interface SearchEpisodesRequest {
+    q: string;
+}
+
+export interface SearchPodcastsRequest {
     q: string;
 }
 
@@ -32,11 +39,11 @@ export interface SearchRequest {
 export class SearchApi extends runtime.BaseAPI {
 
     /**
-     * Search
+     * Search Podcasts
      */
-    async searchRaw(requestParameters: SearchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<PodcastSearchResultOut>>> {
+    async searchEpisodesRaw(requestParameters: SearchEpisodesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<PodcastEpisodeSearchResultOut>>> {
         if (requestParameters.q === null || requestParameters.q === undefined) {
-            throw new runtime.RequiredError('q','Required parameter requestParameters.q was null or undefined when calling search.');
+            throw new runtime.RequiredError('q','Required parameter requestParameters.q was null or undefined when calling searchEpisodes.');
         }
 
         const queryParameters: any = {};
@@ -48,20 +55,54 @@ export class SearchApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/v1/search`,
+            path: `/api/v1/search/episodes`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(PodcastSearchResultOutFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(PodcastEpisodeSearchResultOutFromJSON));
     }
 
     /**
-     * Search
+     * Search Podcasts
      */
-    async search(requestParameters: SearchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<PodcastSearchResultOut>> {
-        const response = await this.searchRaw(requestParameters, initOverrides);
+    async searchEpisodes(requestParameters: SearchEpisodesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<PodcastEpisodeSearchResultOut>> {
+        const response = await this.searchEpisodesRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Search Podcasts
+     */
+    async searchPodcastsRaw(requestParameters: SearchPodcastsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<PodcastOut>>> {
+        if (requestParameters.q === null || requestParameters.q === undefined) {
+            throw new runtime.RequiredError('q','Required parameter requestParameters.q was null or undefined when calling searchPodcasts.');
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters.q !== undefined) {
+            queryParameters['q'] = requestParameters.q;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/v1/search/podcasts`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(PodcastOutFromJSON));
+    }
+
+    /**
+     * Search Podcasts
+     */
+    async searchPodcasts(requestParameters: SearchPodcastsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<PodcastOut>> {
+        const response = await this.searchPodcastsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

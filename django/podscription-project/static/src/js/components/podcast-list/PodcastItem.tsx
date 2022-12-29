@@ -16,7 +16,7 @@ const PodcastItem: React.FC<PodcastItemProps> = ({ podcast, itemKey }) => {
 
     return (
 
-        <div className="col-span-1" key={itemKey}>
+        <div key={itemKey}>
             <Link to={`/podcast/${podcast.slug}`}>
                 <img src={podcast.logoUrl} alt={podcast.name} width={300} className="mx-auto" />
             </Link>
