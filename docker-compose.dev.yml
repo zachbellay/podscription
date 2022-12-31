@@ -1,0 +1,52 @@
+version: "3.9"
+
+services:
+
+  flower:
+    extends: 
+      file: docker-compose.yml
+      service: flower
+
+  celery-worker:
+    extends:
+      file: docker-compose.yml
+      service: celery-worker
+
+  celery-whisper-worker:
+    extends:
+      file: docker-compose.yml
+      service: celery-whisper-worker
+
+  redis:
+    extends:
+      file: docker-compose.yml
+      service: redis
+
+  django:
+    extends:
+      file: docker-compose.yml
+      service: django
+    volumes:
+      - ./django:/usr/src/app/django
+  
+  postgres:
+    extends:
+      file: docker-compose.yml
+      service: postgres
+
+  pgadmin:
+    extends:
+      file: docker-compose.yml
+      service: pgadmin
+
+networks:
+  postgres:
+    driver: bridge
+  redis:
+    driver: bridge
+  celery-worker:
+    driver: bridge
+
+volumes:
+  postgres:
+

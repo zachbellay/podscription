@@ -2,10 +2,13 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from "path";
 
-
 // https://vitejs.dev/config/
+
+const mode = process.env.APP_ENV;
+
+
 export default defineConfig({
-  mode: 'development',
+  mode: mode,
   plugins: [react()],
   base: '/static/',
   root: path.resolve('./django/podscription-project/static/src'),
@@ -43,5 +46,3 @@ export default defineConfig({
     },
   },
 })
-
-

@@ -14,18 +14,18 @@ import { PodcastEpisodeLightOut } from '../adapters/models';
 import PodcastEpisodeItem from '../components/podcast-list/PodcastEpisodeItem';
 import Loader from '../components/loader/Loader';
 import EndMessage from '../components/end-message/EndMessage';
-
+import { getBaseUrl } from '../utils';
 
 // TODO : Make basePath come from env in vite config
 const podcastsApi = new PodcastsApi(new Configuration({
-    basePath: 'http://localhost:8888',
+    basePath: getBaseUrl(),
     headers: {
         'X-CSRFToken': Cookies.get('csrftoken')
     }
 }));
 
 const podcastEpisodesApi = new PodcastEpisodesApi(new Configuration({
-    basePath: 'http://localhost:8888',
+    basePath: getBaseUrl(),
     headers: {
         'X-CSRFToken': Cookies.get('csrftoken')
     }

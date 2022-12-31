@@ -7,6 +7,7 @@ import { useLocation } from 'react-router-dom';
 import Search from '../components/search/Search';
 import PodcastOut from '../adapters/models/PodcastOut';
 import { PodcastEpisodeSearchResultOut } from '../adapters/models';
+import { getBaseUrl } from '../utils';
 // import PodcastSearchResults from '../components/search/PodcastSearchResults';
 
 import PodcastItem from '../components/podcast-list/PodcastItem';
@@ -14,14 +15,21 @@ import PodcastItem from '../components/podcast-list/PodcastItem';
 
 import PodcastEpisodeSearchResultItem from '../components/search/PodcastEpisodeSearchResultItem';
 
+console.log(import.meta.env.MODE)
+console.log(import.meta.env.VITE_API_BASE_URI)
+console.log(getBaseUrl())
 
 // TODO : Make basePath come from env in vite config
 const api = new SearchApi(new Configuration({
-    basePath: 'http://localhost:8888',
+    // basePath: basePath,
+    basePath: getBaseUrl(),
     headers: {
         'X-CSRFToken': Cookies.get('csrftoken')
     }
 }));
+
+// console.log('basePath', basePath);
+console.log('hello world')
 
 interface SearchResultsProps {
     updateAudioCallback: (source: string) => void
@@ -44,10 +52,6 @@ const SearchResults = ({ updateAudioCallback }: SearchResultsProps) => {
         });
     }, [query]);
 
-    console.log('podcasts')
-    console.log(podcasts)
-    console.log('episodes')
-    console.log(episodes)
 
     return (
 
@@ -65,12 +69,10 @@ const SearchResults = ({ updateAudioCallback }: SearchResultsProps) => {
                     <div className="mb-14">
                         <h1 className="text-2xl font-semibold text-left dark:text-white mb-2">Top Podcast Results</h1>
 
-                        <div className={`grid md:grid-cols-${podcasts.length} gap-1`}>
+                        <div className="flex flex-col justify-center items-center md:flex-row md:gap-4">
                             {podcasts.map((podcast) => {
                                 return (
-                                    <div className="col-span-1">
-                                        <PodcastItem podcast={podcast} itemKey={podcast.slug} />
-                                    </div>
+                                    <PodcastItem podcast={podcast} itemKey={podcast.slug} />
                                 )
                             })}
                         </div>

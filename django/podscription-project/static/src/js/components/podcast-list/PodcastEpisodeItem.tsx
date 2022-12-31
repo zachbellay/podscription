@@ -6,6 +6,8 @@ import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC'
 import { PodcastEpisodeLightOut, PodcastOut } from '../../adapters/models';
 import { Link } from 'react-router-dom';
 import { formatDate, formatSeconds } from '../../utils';
+// import sanitizeHtml from 'sanitize-html';
+import { convert } from 'html-to-text';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis)
 
@@ -19,6 +21,13 @@ interface PodcastEpisodeItemProps {
     itemKey: string
 }
 
+// const sanitizeOptions = {
+//     allowedTags: ['b', 'i', 'em', 'strong', 'a', 'p'],
+//     allowedAttributes: {
+//         'a': ['href']
+//     },
+// };
+
 const PodcastEpisodeItem = (props: PodcastEpisodeItemProps) => {
 
     return (
@@ -28,15 +37,18 @@ const PodcastEpisodeItem = (props: PodcastEpisodeItemProps) => {
                 <p className="text-sm text-slate-500 dark:text-slate-200">{formatDate(props.episode.date)} | {formatSeconds(props.episode.duration)}</p>
             </Link>
             <div className="flex flex-wrap">
-                <Link to={`/podcast/${props.podcast.slug}/episode/${props.episode.slug}`}>
-                    <LinesEllipsis className="text-sm dark:text-white"
-                        text={props.episode.description}
-                        maxLine='3'
-                        ellipsis='...'
-                        trimRight
-                        basedOn='words'
-                    />
-                </Link>
+                <div className="flex flex-row w-full">
+                    <Link to={`/podcast/${props.podcast.slug}/episode/${props.episode.slug}`}>
+                        <LinesEllipsis className="text-sm dark:text-white"
+                            text={convert(props.episode.description)}
+                            maxLine='3'
+                            ellipsis='...'
+                            trimRight
+                            basedOn='words'
+                        />
+                    </Link>
+                </div>
+
 
                 <div className="flex flex-row mt-2">
 

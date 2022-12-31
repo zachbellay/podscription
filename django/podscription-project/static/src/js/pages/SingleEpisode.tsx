@@ -12,17 +12,19 @@ import { Button } from 'flowbite-react/lib/cjs/components/Button';
 import { HiPlay } from 'react-icons/hi';
 import { formatDate } from '../utils';
 import Transcript from '../components/transcript/Transcript';
+import { getBaseUrl } from '../utils';
+import { convert } from 'html-to-text';
 
 // TODO : Make basePath come from env in vite config
 const podcastsApi = new PodcastsApi(new Configuration({
-    basePath: 'http://localhost:8888',
+    basePath: getBaseUrl(),
     headers: {
         'X-CSRFToken': Cookies.get('csrftoken')
     }
 }));
 
 const podcastEpisodesApi = new PodcastEpisodesApi(new Configuration({
-    basePath: 'http://localhost:8888',
+    basePath: getBaseUrl(),
     headers: {
         'X-CSRFToken': Cookies.get('csrftoken')
     }
@@ -96,10 +98,10 @@ const SingleEpisode: React.FC<SingleEpisodeProps> = ({ updateAudioCallback }) =>
 
                             <p className="font-light text-sm text-gray-800 dark:text-gray-400">{formatDate(podcastEpisode.date)} | {Math.floor(podcastEpisode.duration / 60)}m {podcastEpisode.duration % 60}s</p>
 
-                            <p className="dark:text-gray-300">{podcastEpisode.description}</p>
+                            <p className="dark:text-gray-300">{convert(podcastEpisode.description)}</p>
 
                             <Button onClick={() => updateAudioCallback(podcastEpisode.resolvedAudioUrl)} size="xs" outline={true} color='gray'
-                                pill={true} className="mr-2">
+                                pill={true} className="mr-2 my-1">
                                 <HiPlay className="mr-2 h-5 w-5" />
                                 Play
                             </Button>

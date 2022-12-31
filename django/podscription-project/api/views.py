@@ -1,5 +1,5 @@
 from itertools import chain
-from typing import List
+from typing import Dict, List, Union
 
 from api.models import Podcast, PodcastEpisode
 from api.schema import (
@@ -11,6 +11,8 @@ from api.schema import (
 from ninja import NinjaAPI
 from ninja.errors import HttpError
 
+# check if django debug is true
+from django.conf import settings
 from django.contrib import admin
 from django.contrib.postgres.search import (
     SearchHeadline,
@@ -24,25 +26,10 @@ from django.db.models import F, Value
 from django.http import Http404
 from django.shortcuts import get_object_or_404, render
 
-api = NinjaAPI()
-
-
-# def search(query):
-#     query = SearchQuery(query)
-#     podcast_search_vector = SearchVector('name', weight='A') + SearchVector('author', weight='B')
-#     podcasts = (
-#         Podcast.objects.annotate(search=podcast_search_vector)
-#         .annotate(similarity=TrigramSimilarity('search', query))
-#         .filter(similarity__gt=0.3).order_by('-similarity')
-#     )
-#     podcast_episode_search_vector = SearchVector('transcription', weight='A') + SearchVector('description', weight='B')
-#     episodes = PodcastEpisode.objects.annotate(
-#         search=podcast_episode_search_vector,
-#         similarity=TrigramSimilarity('search', query)
-#     ).filter(similarity__gt=0.3, transcription__isnull=False).order_by('-similarity')
-#     return list(podcasts) + list(episodes)
-
-from typing import Dict, Union
+if settings.DEBUG:
+    api = NinjaAPI()
+else:
+    api = NinjaAPI(openapi_url=None)
 
 
 @api.get(
@@ -71,7 +58,10 @@ def search_podcasts(request, q: str):
         chain(podcast_by_name, podcast_by_author),
         key=lambda x: x.similarity,
         reverse=True,
-    )[:3]
+    )
+
+    podcast_results = list(set(podcast_results))[:3]
+
     return podcast_results
 
 

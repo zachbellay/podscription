@@ -6,12 +6,13 @@ import { PodcastsApi } from '../adapters/apis/PodcastsApi';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Header from '../components/headers/Header';
 import PodcastItem from '../components/podcast-list/PodcastItem';
-import { Spinner } from 'flowbite-react/lib/cjs/components/Spinner';
 import Loader from '../components/loader/Loader';
 import EndMessage from '../components/end-message/EndMessage';
+import { getBaseUrl } from '../utils';
 
 const podcastsApi = new PodcastsApi(new Configuration({
-    basePath: 'http://localhost:8888',
+
+    basePath: getBaseUrl(),
     headers: {
         'X-CSRFToken': Cookies.get('csrftoken')
     }
@@ -70,7 +71,7 @@ const PodcastAll = () => {
             <Header />
             {/* <div className="container px-5 py-12 min-w-full sm:px-24 min-h-full dark:bg-slate-800"> */}
             <div className="container px-5 min-w-full min-h-full dark:bg-slate-800">
-                <h1 className="text-3xl font-bold text-center dark:text-white py-5">All Podcasts</h1>
+                <h1 className="text-3xl font-bold text-center dark:text-white py-4">All Podcasts</h1>
 
                 <InfiniteScroll
                     dataLength={podcasts.length} //This is important field to render the next data

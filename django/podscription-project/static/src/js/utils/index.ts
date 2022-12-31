@@ -17,4 +17,9 @@ function formatSeconds(seconds) {
     return `${hoursString}${minutesString}${secondsString}`;
 }
 
-export { formatDate, formatSeconds };
+function getBaseUrl() {
+    const baseUrl = import.meta.env.MODE === 'development' ? 'http://localhost:8888' : 'https://podscription.app';
+    return baseUrl;
+}
+
+export { formatDate, formatSeconds, getBaseUrl };

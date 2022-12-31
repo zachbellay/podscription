@@ -4,7 +4,7 @@ set -e
 cd ./django/podscription-project/
 python manage.py makemigrations
 python manage.py migrate
-python manage.py collectstatic --clear --noinput
+python manage.py collectstatic --clear --noinput --ignore src/*
 
 rm -rf /usr/src/app/logs/
 mkdir /usr/src/app/logs/

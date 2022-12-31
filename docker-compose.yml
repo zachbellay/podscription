@@ -10,8 +10,9 @@ services:
       - DATABASE_NAME=${DJANGO_POSTGRES_DB}
       - DATABASE_USER=${DJANGO_POSTGRES_USER}
       - DATABASE_PASSWORD=${DJANGO_DATABASE_PASSWORD}
-      - DATABASE_HOST=postgres
-      - DATABASE_PORT=5432
+      - DATABASE_HOST=${DJANGO_DATABASE_HOST}
+      - DATABASE_PORT=${DJANGO_DATABASE_PORT}
+      - DJANGO_DEBUG=${DJANGO_DEBUG}
       - REDIS_URL=redis://redis:6379/0
     depends_on:
       - postgres
@@ -23,56 +24,54 @@ services:
       - celery-worker
     ports:
       - "5555:5555"
-    env_file:
-      - .env
+    # env_file:
+      # - .env
 
   celery-worker:
     restart: always
     build:
       context: .
       dockerfile: docker/celery-worker/Dockerfile
-    volumes:
-      - ./django:/usr/src/app/django
     depends_on:
       - postgres
       - redis
     environment:
-      - DATABASE_NAME=${DJANGO_POSTGRES_DB}
-      - DATABASE_USER=${DJANGO_POSTGRES_USER}
-      - DATABASE_PASSWORD=${DJANGO_DATABASE_PASSWORD}
-      - DATABASE_HOST=postgres
-      - DATABASE_PORT=5432
+      - DJANGO_POSTGRES_USER=${DJANGO_POSTGRES_USER}
+      - DJANGO_POSTGRES_DB=${DJANGO_POSTGRES_DB}
+      - DJANGO_DATABASE_PASSWORD=${DJANGO_DATABASE_PASSWORD}
+      - DJANGO_DATABASE_HOST=${DJANGO_DATABASE_HOST}
+      - DJANGO_DATABASE_PORT=${DJANGO_DATABASE_PORT}
+      - DJANGO_DEBUG=${DJANGO_DEBUG}
       - REDIS_URL=redis://redis:6379/0
     networks:
       - postgres
       - redis
       - celery-worker
-    env_file:
-      - .env
+    # env_file:
+    #   - .env
 
   celery-whisper-worker:
     restart: always
     build:
       context: .
       dockerfile: docker/celery-whisper-worker/Dockerfile
-    volumes:
-      - ./django:/usr/src/app/django
     depends_on:
       - postgres
       - redis
     environment:
-      - DATABASE_NAME=${DJANGO_POSTGRES_DB}
-      - DATABASE_USER=${DJANGO_POSTGRES_USER}
-      - DATABASE_PASSWORD=${DJANGO_DATABASE_PASSWORD}
-      - DATABASE_HOST=postgres
-      - DATABASE_PORT=5432
+      - DJANGO_POSTGRES_USER=${DJANGO_POSTGRES_USER}
+      - DJANGO_POSTGRES_DB=${DJANGO_POSTGRES_DB}
+      - DJANGO_DATABASE_PASSWORD=${DJANGO_DATABASE_PASSWORD}
+      - DJANGO_DATABASE_HOST=${DJANGO_DATABASE_HOST}
+      - DJANGO_DATABASE_PORT=${DJANGO_DATABASE_PORT}
+      - DJANGO_DEBUG=${DJANGO_DEBUG}
       - REDIS_URL=redis://redis:6379/0
     networks:
       - postgres
       - redis
       - celery-worker
-    env_file:
-      - .env
+    # env_file:
+    #   - .env
 
   redis:
     image: "redis:alpine"
@@ -83,20 +82,24 @@ services:
 
       
   django:
+    container_name: podscription_django
     restart: always
     build:
       context: .
       dockerfile: docker/django/Dockerfile
     depends_on:
       - postgres
-    volumes:
-      - ./django:/usr/src/app/django
     environment:
-      - DJANGO_DATABASE_HOST=postgres
-      - DJANGO_DATABASE_PORT=5432
+      - DJANGO_POSTGRES_USER=${DJANGO_POSTGRES_USER}
+      - DJANGO_POSTGRES_DB=${DJANGO_POSTGRES_DB}
+      - DJANGO_DATABASE_PASSWORD=${DJANGO_DATABASE_PASSWORD}
+      - DJANGO_DATABASE_HOST=${DJANGO_DATABASE_HOST}
+      - DJANGO_DATABASE_PORT=${DJANGO_DATABASE_PORT}
+      - DJANGO_DEBUG=${DJANGO_DEBUG}
+      - VITE_API_BASE_URI=${VITE_API_BASE_URI}
       - REDIS_URL=redis://redis:6379/0
-    env_file:
-      - .env
+    # env_file:
+      # - .env.development
     networks:
       - postgres
       - redis
@@ -107,7 +110,6 @@ services:
     container_name: postgres
     build: 
       context: ./docker/postgres
-      # dockerfile: 
     environment:
       POSTGRES_USER: ${DJANGO_POSTGRES_USER}
       POSTGRES_PASSWORD: ${DJANGO_DATABASE_PASSWORD}
@@ -120,8 +122,8 @@ services:
     networks:
       - postgres
     restart: unless-stopped
-    env_file:
-      - .env
+    # env_file:
+    #   - .env
 
   pgadmin:
     container_name: pgadmin
@@ -140,8 +142,8 @@ services:
       - postgres
 
     restart: unless-stopped
-    env_file:
-      - .env
+    # env_file:
+    #   - .env
 
 networks:
   postgres:

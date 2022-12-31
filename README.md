@@ -50,13 +50,13 @@ Add manual command to add a single podcast to the database from a URL, including
 
 Create an appealing landing page using CSS or SVG.
 
-Create a single podcast view page with information about the podcast and a list of transcribed episodes.
+- [x] - Create a single podcast view page with information about the podcast and a list of transcribed episodes.
 
-Create a specific page for each podcast episode with the transcription, description, and other scraped information.
+- [x] - Create a specific page for each podcast episode with the transcription, description, and other scraped information.
 
-Create a list view for podcasts.
+- [x] - Create a list view for podcasts.
 
-Fix bug on search results page where the first word is always the query, and consider implementing mixed search results for podcasts and podcast episodes.
+- [] - Can't be fixed? - Fix bug on search results page where the first word is always the query, and consider implementing mixed search results for podcasts and podcast episodes.
 
 Implement testing to prevent regression.
 
@@ -66,8 +66,6 @@ Package everything in a single bundle and add an environment variable for the ba
 
 Address DevOps tasks, such as deploying to a production environment.
 
-
-
-
-
 Develop an automatic scraper that searches for podcasts through carousels and scrapes information in a depth-first search.
+
+
