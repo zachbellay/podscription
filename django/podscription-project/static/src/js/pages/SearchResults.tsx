@@ -67,7 +67,7 @@ const SearchResults = ({ updateAudioCallback }: SearchResultsProps) => {
 
                 {podcasts && podcasts.length > 0 &&
                     <div className="mb-14">
-                        <h1 className="text-2xl font-semibold text-left dark:text-white mb-2">Top Podcast Results</h1>
+                        <h1 className="text-2xl font-semibold text-left dark:text-white mb-2 mx-4 sm:mx-0">Top Podcast Results</h1>
 
                         <div className="flex flex-col justify-center items-center md:flex-row md:gap-4">
                             {podcasts.map((podcast) => {
@@ -98,6 +98,13 @@ const SearchResults = ({ updateAudioCallback }: SearchResultsProps) => {
                     </div>
                 }
 
+                {podcasts.length === 0 && episodes.length === 0 &&
+                    <div className="flex flex-col justify-center items-center">
+                        <h1 className="text-2xl font-semibold text-left dark:text-white mb-2 mx-4 sm:mx-0">
+                            No Results Found
+                        </h1>
+                    </div>
+                }
 
             </div >
         </div >
