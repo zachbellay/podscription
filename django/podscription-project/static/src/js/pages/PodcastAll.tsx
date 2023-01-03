@@ -69,8 +69,8 @@ const PodcastAll = () => {
 
         <div className="h-screen">
             <Header />
-            {/* <div className="container px-5 py-12 min-w-full sm:px-24 min-h-full dark:bg-slate-800"> */}
-            <div className="container px-5 min-w-full min-h-full dark:bg-slate-800">
+
+            <div className="container px-5 pb-12 min-w-full min-h-full dark:bg-slate-800">
                 <h1 className="text-3xl font-bold text-center dark:text-white py-4">All Podcasts</h1>
 
                 <InfiniteScroll

@@ -96,9 +96,9 @@ def read_all_rss_feeds():
 @app.task
 def read_rss_feed(podcast_id: str):
 
-    # all_podcasts = Podcast.objects.filter(is_rss=True)
-
-    # podcasts = [podcast for podcast in podcasts if podcast.is_rss]
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:108.0) Gecko/20100101 Firefox/108.0"
+    }
 
     podcast = Podcast.objects.get(id=podcast_id)
 
@@ -122,6 +122,12 @@ def read_rss_feed(podcast_id: str):
         duration = entry.itunes_duration
         duration = duration_to_seconds(duration)
 
+        resolved_request = requests.head(
+            audio_url, headers=headers, allow_redirects=True
+        )
+
+        logger.info(f"Resolved audio url: {resolved_request.url}")
+
         episode = PodcastEpisode(
             podcast=podcast,
             podcast_name=podcast.name,
@@ -129,6 +135,7 @@ def read_rss_feed(podcast_id: str):
             title=entry.title,
             description=entry.description,
             audio_url=audio_url,
+            resolved_audio_url=resolved_request.url,
             details_url=audio_url,
             duration=duration,
         )
@@ -176,18 +183,8 @@ def transcribe_podcast_episode(podcast_episode_id: str):
     if podcast_episode.whisper_transcription_object:
         logger.info("Podcast episode already has a transcription")
         return
-
-    # r = requests.get(podcast_episode.audio_url)
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:108.0) Gecko/20100101 Firefox/108.0"
-    }
-
-    resolved_request = requests.head(
-        podcast_episode.audio_url, headers=headers, allow_redirects=True
-    )
-    podcast_episode.resolved_audio_url = resolved_request.url
-    logger.info(f"Resolved audio url: {resolved_request.url}")
-    r = requests.get(resolved_request.url)
+    
+    r = requests.get(podcast_episode.resolved_audio_url)
 
     audio_data = r.content
 

@@ -28,6 +28,8 @@ services:
       service: django
     volumes:
       - ./django:/usr/src/app/django
+    networks:
+      - django
   
   postgres:
     extends:
@@ -38,6 +40,23 @@ services:
     extends:
       file: docker-compose.yml
       service: pgadmin
+  
+  frontend:
+    restart: always
+    build:
+      context: .
+      dockerfile: docker/frontend/Dockerfile
+    depends_on:
+      - django
+    env_file: 
+      - .env.development
+    ports:
+      - "3000:3000"
+    networks:
+      - django
+    volumes:
+      - ./django:/usr/src/app/django
+    
 
 networks:
   postgres:
@@ -45,6 +64,8 @@ networks:
   redis:
     driver: bridge
   celery-worker:
+    driver: bridge
+  django:
     driver: bridge
 
 volumes:

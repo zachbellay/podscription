@@ -57,7 +57,7 @@ const SearchResults = ({ updateAudioCallback }: SearchResultsProps) => {
 
         <div className="h-screen">
             <Header />
-            <div className="container min-w-full sm:px-24 min-h-full dark:bg-slate-800">
+            <div className="container min-w-full pb-12 sm:px-24 min-h-full dark:bg-slate-800">
 
                 <div className="mx-4 sm:mx-0">
                     <Search query={query} />

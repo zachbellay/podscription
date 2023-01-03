@@ -1,12 +1,14 @@
 FROM node:19 as builder
 
+WORKDIR /usr/src/app
+
 ADD package.json package-lock.json tsconfig.json tsconfig.node.json tailwind.config.cjs postcss.config.cjs vite.config.ts openapitools.json ./
 
 RUN npm install
 
-ADD ./django/podscription-project/static/src /django/podscription-project/static/src
-ADD .env.production .env.production
-ADD .env.development .env.development
+ADD ./django/podscription-project/static/src ./django/podscription-project/static/src
+#ADD .env.production .env.production
+#ADD .env.development .env.development
 
 RUN npm run build
 
@@ -47,7 +49,7 @@ RUN poetry install --only main --no-root
 
 ADD ./django ./django
 ADD ./docker ./docker
-COPY --from=builder /django/podscription-project/static/dist ./django/podscription-project/static/dist
+COPY --from=builder /usr/src/app/django/podscription-project/static/dist ./django/podscription-project/static/dist
 
 FROM base as prod
 EXPOSE 8888
