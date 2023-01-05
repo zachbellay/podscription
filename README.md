@@ -8,7 +8,7 @@ ssh -L 5432:localhost:5432 -L 6379:localhost:6379 -i ~/.ssh/id_rsa root@66.175.2
 
 # docker run command with using gpu
     
-docker run --env-file .env --network='host' --gpus all podscription-celery-whisper-worker
+docker run --env-file .env.production --network='host' --gpus all podscription-celery-whisper-worker
 
 --- 
 
@@ -38,7 +38,11 @@ COMPOSE_PROFILES=worker make build && COMPOSE_PROFILES=worker make up
 - [ ] Implement testing to prevent regression.
 - [ ] Set up a CI/CD pipeline using GitHub actions.
 - [ ] Create a way to add more than just one podcast at a time, ideally via the django admin site.
-- 
+- [ ] Remove non-worker stuff from webserver docker-compose (flower, redis)
+- [ ] Give Makefile ability to discern between docker-compose and docker compose (the dash)
+- [ ] Remove playwright from python + docker containers
+- [ ] Split out webserver docker compose from celery worker docker compose 
+- [ ] Make it so that if you are entering info into a form the keyboard shortcuts don't work (i.e. spacebar doesn't pause podcast)
 
 ### Parking Lot:
 - [-] have all references to base url come from a config file that comes from an env file

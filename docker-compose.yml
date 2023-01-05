@@ -13,7 +13,7 @@ services:
       - DATABASE_HOST=${DJANGO_DATABASE_HOST}
       - DATABASE_PORT=${DJANGO_DATABASE_PORT}
       - DJANGO_DEBUG=${DJANGO_DEBUG}
-      - REDIS_URL=redis://redis:6379/0
+      - REDIS_URL=${DJANGO_REDIS_URL}
     depends_on:
       - postgres
       - redis
@@ -44,7 +44,7 @@ services:
       - DJANGO_DATABASE_HOST=${DJANGO_DATABASE_HOST}
       - DJANGO_DATABASE_PORT=${DJANGO_DATABASE_PORT}
       - DJANGO_DEBUG=${DJANGO_DEBUG}
-      - REDIS_URL=redis://redis:6379/0
+      - REDIS_URL=${WORKER_REDIS_URL}
     networks:
       - postgres
       - redis
@@ -69,7 +69,7 @@ services:
       - DJANGO_DATABASE_HOST=${DJANGO_DATABASE_HOST}
       - DJANGO_DATABASE_PORT=${DJANGO_DATABASE_PORT}
       - DJANGO_DEBUG=${DJANGO_DEBUG}
-      - REDIS_URL=redis://redis:6379/0
+      - REDIS_URL=${WORKER_REDIS_URL}
     networks:
       - postgres
       - redis
@@ -101,7 +101,7 @@ services:
       - DJANGO_DATABASE_PORT=${DJANGO_DATABASE_PORT}
       - DJANGO_DEBUG=${DJANGO_DEBUG}
       - VITE_API_BASE_URI=${VITE_API_BASE_URI}
-      - REDIS_URL=redis://redis:6379/0
+      - REDIS_URL=${DJANGO_REDIS_URL}
     # env_file:
       # - .env.development
     networks:

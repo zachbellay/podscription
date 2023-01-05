@@ -111,6 +111,7 @@ def read_rss_feed(podcast_id: str):
     logger.info(f"Found {len(feed.entries)} episodes for {podcast.name}...")
 
     for entry in feed.entries:
+
         # Find the link to the audio file
         audio_url = None
 
@@ -118,6 +119,10 @@ def read_rss_feed(podcast_id: str):
             if link.type == "audio/mpeg":
                 audio_url = link.href
                 break
+
+        if PodcastEpisode.objects.filter(audio_url=audio_url).exists():
+            logger.info(f"Episode already exists: {podcast.name}-{entry.title}")
+            continue
 
         duration = entry.itunes_duration
         duration = duration_to_seconds(duration)
@@ -154,9 +159,7 @@ def read_rss_feed(podcast_id: str):
 def setup_periodic_tasks(sender, **kwargs):
 
     print("Setting up periodic tasks...")
-    sender.add_periodic_task(
-        3600 * 4, queue_all_spiders, name="Schedule spiders to scrape all podcasts"
-    )
+    
     # sender.add_periodic_task(
     #     3600 * 4, queue_untranscribed_podcast_episodes, name="Schedule transcription"
     # )
