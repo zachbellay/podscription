@@ -1,7 +1,14 @@
 function formatDate(date) {
-    const dayOfWeek = date.toLocaleString('default', { weekday: 'long' });
-    const month = date.toLocaleString('default', { month: 'long' });
-    const day = date.getDate();
+
+    // assume that the date is a UTC date
+    const newDate = new Date(date);
+    console.log(newDate)
+
+    const dayOfWeek = date.toLocaleString('default', { weekday: 'long', timeZone: 'UTC' });
+    const month = date.toLocaleString('default', { month: 'long', timeZone: 'UTC' });
+    const day = date.getDate({ timezone: 'UTC' });
+    // console.log(date)
+    // console.log(day)
     const year = date.getFullYear();
     return `${dayOfWeek} ${month} ${day}, ${year}`;
 }

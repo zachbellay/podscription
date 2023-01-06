@@ -39,10 +39,10 @@ COMPOSE_PROFILES=worker make build && COMPOSE_PROFILES=worker make up
 - [ ] Set up a CI/CD pipeline using GitHub actions.
 - [ ] Create a way to add more than just one podcast at a time, ideally via the django admin site.
 - [ ] Remove non-worker stuff from webserver docker-compose (flower, redis)
-- [ ] Give Makefile ability to discern between docker-compose and docker compose (the dash)
 - [ ] Remove playwright from python + docker containers
 - [ ] Split out webserver docker compose from celery worker docker compose 
 - [ ] Make it so that if you are entering info into a form the keyboard shortcuts don't work (i.e. spacebar doesn't pause podcast)
+- [ ] Fix date formatting, it looks like the formatDate is assuming that the PST timestamp is UTC and then subtracting more time?
 
 ### Parking Lot:
 - [-] have all references to base url come from a config file that comes from an env file
@@ -57,5 +57,7 @@ COMPOSE_PROFILES=worker make build && COMPOSE_PROFILES=worker make up
 - [x] implement single podcast view page
 - [x] implement podast episode view page
 - [x] Add manual command to add a single podcast to the database from a URL, including scraping title, description, image URL, and website URL.
+- [x] Give Makefile ability to discern between docker-compose and docker compose (the dash)
+    - turns out I needed to upgrade to docker compose v2 which uses the `docker compose` syntax without the dash
 
 
