@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { Navbar } from 'flowbite-react/lib/cjs/components/Navbar';
 import DarkModeButton from '../buttons/DarkModeButton';
 
+import PodscriptionLogo from '../../../assets/podscription.svg';
+
 import styled, { css } from "styled-components";
 
 
@@ -25,8 +27,8 @@ const Header = () => {
             <Link to="/">
                 <Navbar.Brand>
                     <img
-                        src="https://flowbite.com/docs/images/logo.svg"
-                        className="mr-3 h-6 sm:h-9 "
+                        src={PodscriptionLogo}
+                        className="mr-3 h-6 sm:h-9 dark:invert"
                         alt="Podscription Logo"
                     />
                     <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
