@@ -127,11 +127,15 @@ def read_rss_feed(podcast_id: str):
         duration = entry.itunes_duration
         duration = duration_to_seconds(duration)
 
-        resolved_request = requests.head(
-            audio_url, headers=headers, allow_redirects=True
-        )
+        try:
+            resolved_request = requests.head(
+                audio_url, headers=headers, allow_redirects=True
+            )
 
-        logger.info(f"Resolved audio url: {resolved_request.url}")
+            logger.info(f"Resolved audio url: {resolved_request.url}")
+        except requests.exceptions.TooManyRedirects:
+            logger.error(f"Too many redirects: {audio_url}")
+            continue
 
         episode = PodcastEpisode(
             podcast=podcast,
