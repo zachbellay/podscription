@@ -23,9 +23,6 @@ ADD ./docker/celery-worker/requirements.txt ./requirements.txt
 RUN pip install -r ./requirements.txt
 RUN pip install watchdog
 
-RUN playwright install-deps
-RUN playwright install chromium
-
 ADD ./docker ./docker
 
 COPY ./docker/celery/celeryd /etc/init.d/

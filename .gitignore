@@ -119,9 +119,6 @@ instance/
 .webassets-cache
 /webserver_config.py
 
-# Scrapy stuff:
-.scrapy
-
 # Sphinx documentation
 docs/_build/
 docs/rtd-deprecation/_build/
@@ -338,9 +335,6 @@ db.sqlite3-journal
 # Flask stuff:
 instance/
 .webassets-cache
-
-# Scrapy stuff:
-.scrapy
 
 # Sphinx documentation
 docs/_build/

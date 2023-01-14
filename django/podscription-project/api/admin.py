@@ -8,7 +8,6 @@ from .models import Podcast, PodcastEpisode
 from .tasks import (
     group_podcast_episode_transcript,
     read_rss_feed,
-    run_spider,
     transcribe_podcast_episode,
 )
 
@@ -35,11 +34,6 @@ def rerun_transcription_grouping(modeladmin, request, queryset):
         episode.save()
         group_podcast_episode_transcript.delay(episode.id)
 
-
-@admin.action(description="Run spider on selected podcasts")
-def run_spider_on_selected(modeladmin, request, queryset):
-    for podcast in queryset:
-        run_spider.delay(podcast.id)
 
 
 @admin.action(description="Update podcast information")
@@ -85,7 +79,6 @@ def update_select_podcasts(modeladmin, request, queryset):
 class PodcastAdmin(admin.ModelAdmin):
     list_display = ("name", "author", "url")
     actions = [
-        run_spider_on_selected,
         update_select_podcasts,
         read_selected_rss_feeds,
     ]

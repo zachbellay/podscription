@@ -11,16 +11,9 @@ from billiard import Process
 from celery import shared_task
 from celery.schedules import crontab
 from django_celery_beat.models import PeriodicTask
-from scrapers import settings as spider_settings
-from scrapers.spiders.google_podcast import GooglePodcastSpider
-from scrapy import signals
-from scrapy.crawler import CrawlerProcess, CrawlerRunner
-from scrapy.settings import Settings
-from scrapy.utils.project import get_project_settings
-from twisted.internet import asyncioreactor
+from podscription.celery import app
 
 from django.db import IntegrityError
-from podscription.celery import app
 
 from .utils import duration_to_seconds, group_text_by_time_window
 
@@ -31,58 +24,11 @@ model_size = "base"
 logger = logging.getLogger(__name__)
 
 
-class CeleryCrawlerProcess(Process):
-    def __init__(self, spider, podcast_id: str):
-        super().__init__()
-        self.podcast_id = podcast_id
-        # self.reactor = asyncioreactor.AsyncioSelectorReactor()
-        self.crawler_settings = Settings()
-        self.crawler_settings.setmodule(spider_settings)
-        # self.crawler = CrawlerProcess(settings=self.crawler_settings)
-        from scrapy.utils.log import configure_logging
-        from scrapy.utils.project import get_project_settings
-
-        settings = get_project_settings()
-        # configure_logging({'LOG_LEVEL' : 'INFO'})
-
-        self.crawler = CrawlerProcess({"LOG_LEVEL": "INFO"})
-        # self.crawler = CrawlerRunner({'LOG_LEVEL' : 'INFO'})
-        self.spider = spider
-
-    def run(self):
-        self.crawler.crawl(self.spider, podcast_id=self.podcast_id)
-        self.crawler.start(stop_after_crawl=True, install_signal_handlers=True)
-
-
-@app.task
-def run_spider(podcast_id: str):
-
-    spider = GooglePodcastSpider
-    crawler = CeleryCrawlerProcess(spider, podcast_id=podcast_id)
-    crawler.start()
-    crawler.join()
-
-    # send podcasts to transcription queue
-    untranscribed_podcast_episodes = PodcastEpisode.objects.filter(
-        podcast=podcast_id, transcription=None
-    )
-    for podcast_episode in untranscribed_podcast_episodes:
-        transcribe_podcast_episode.delay(podcast_episode.id)
-
-
 @app.task
 def queue_untranscribed_podcast_episodes():
     eps = PodcastEpisode.objects.filter(transcription=None)
     for ep in eps:
         transcribe_podcast_episode.delay(ep.id)
-
-
-@app.task
-def queue_all_spiders():
-    all_podcasts = Podcast.objects.all()
-
-    for podcast in all_podcasts:
-        run_spider.delay(podcast.id)
 
 
 @app.task
@@ -163,7 +109,7 @@ def read_rss_feed(podcast_id: str):
 def setup_periodic_tasks(sender, **kwargs):
 
     print("Setting up periodic tasks...")
-    
+
     # sender.add_periodic_task(
     #     3600 * 4, queue_untranscribed_podcast_episodes, name="Schedule transcription"
     # )
@@ -190,7 +136,7 @@ def transcribe_podcast_episode(podcast_episode_id: str):
     if podcast_episode.whisper_transcription_object:
         logger.info("Podcast episode already has a transcription")
         return
-    
+
     r = requests.get(podcast_episode.resolved_audio_url)
 
     audio_data = r.content

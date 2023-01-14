@@ -13,6 +13,9 @@ RUN apt-get install -y g++
 RUN apt-get install -y build-essential
 RUN apt-get install -y wget
 
+# RUN apt-get update && apt-get -y upgrade && \
+#     apt-get install -y gcc g++ build-essential wget
+
 USER root
 RUN useradd -ms /bin/bash celery
 RUN usermod -a -G celery celery
