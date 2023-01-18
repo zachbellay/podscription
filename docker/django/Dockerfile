@@ -60,6 +60,7 @@ FROM python:3.10-slim as prod
 
 ENV PATH="/usr/src/app/venv/bin:$PATH"
 
+RUN apt update && apt install libpq-dev -y
 
 ADD ./django ./django
 ADD ./docker ./docker
@@ -71,5 +72,5 @@ COPY --from=frontend-builder /usr/src/app/django/podscription-project/static/dis
 EXPOSE 8888
 RUN chmod +x ./docker/django/entry.sh
 
-ENTRYPOINT tail -f /dev/null
-# CMD ./docker/django/entry.sh
+# ENTRYPOINT tail -f /dev/null
+CMD ./docker/django/entry.sh
