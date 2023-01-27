@@ -1,4 +1,4 @@
-FROM python:3.10.1
+FROM python:3.10-slim
 EXPOSE 5555
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -7,14 +7,7 @@ ENV PYTHONUNBUFFERED 1
 ENV LC_ALL C.UTF-8
 ENV LANG C.UTF-8
 
-RUN apt-get update && apt-get -y upgrade
-RUN apt-get install -y gcc
-RUN apt-get install -y g++
-RUN apt-get install -y build-essential
-RUN apt-get install -y wget
-
-# RUN apt-get update && apt-get -y upgrade && \
-#     apt-get install -y gcc g++ build-essential wget
+RUN apt update && apt install libpq-dev -y
 
 USER root
 RUN useradd -ms /bin/bash celery
@@ -23,12 +16,12 @@ RUN usermod -a -G celery root
 
 WORKDIR /usr/src/app
 
-ADD ./docker/celery-worker/requirements.txt ./requirements.txt
+COPY ./docker/celery-flower/requirements.txt ./requirements.txt
 
 RUN pip install -r ./requirements.txt
 
-ADD ./docker ./docker
-ADD ./django ./django
+COPY ./docker ./docker
+COPY ./django ./django
 
 COPY ./docker/celery/celeryd /etc/init.d/
 COPY ./docker/celery/celerybeat /etc/init.d/
@@ -40,3 +33,4 @@ RUN chmod 755 /etc/init.d/celeryd && \
     chmod +x ./docker/celery-flower/entry.sh
 
 ENTRYPOINT ["./docker/celery-flower/entry.sh"]
+# ENTRYPOINT tail -f /dev/null 

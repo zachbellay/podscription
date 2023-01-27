@@ -8,7 +8,7 @@ else
 endif
 
 build:
-	docker compose $(COMPOSE_FILES) build
+	DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 docker compose $(COMPOSE_FILES) build
 
 ifdef PROD
 up:

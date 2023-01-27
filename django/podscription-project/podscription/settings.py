@@ -172,12 +172,15 @@ CELERY_ACKS_LATE = True
 CELERY_WORKER_SEND_TASK_EVENTS = True
 CELERY_TASK_SEND_SENT_EVENT = True
 
-CELERY_ROUTES = {"transcribe": {"queue": "transcription-worker"}}
-
+CELERY_TASK_ROUTES = {
+    "api.task_worker.transcribe_podcast_episode": {"queue": "transcription_worker"},
+}
 
 # Vite generates files with 8 hash digits
 # http://whitenoise.evans.io/en/stable/django.html#WHITENOISE_IMMUTABLE_FILE_TEST
 
+def hi():
+    pass
 
 def immutable_file_test(path, url):
     # Match filename with 12 hex digits before the extension
