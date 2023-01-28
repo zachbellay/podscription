@@ -1,7 +1,6 @@
 version: "3.9"
 
 services:
-
   flower:
     build:
       context: .
@@ -24,8 +23,6 @@ services:
       - celery-worker
     ports:
       - "5555:5555"
-    # env_file:
-      # - .env
 
   celery-worker:
     profiles:
@@ -34,6 +31,8 @@ services:
     build:
       context: .
       dockerfile: docker/celery-worker/Dockerfile
+      args: 
+       - BUILDKIT_INLINE_CACHE=1
     depends_on:
       - postgres
       - redis
@@ -49,8 +48,6 @@ services:
       - postgres
       - redis
       - celery-worker
-    # env_file:
-    #   - .env
 
   celery-whisper-worker:
     profiles:
@@ -59,6 +56,8 @@ services:
     build:
       context: .
       dockerfile: docker/celery-whisper-worker/Dockerfile
+      args: 
+       - BUILDKIT_INLINE_CACHE=1
     depends_on:
       - postgres
       - redis
@@ -74,8 +73,6 @@ services:
       - postgres
       - redis
       - celery-worker
-    # env_file:
-    #   - .env
 
   redis:
     image: "redis:alpine"
@@ -84,13 +81,14 @@ services:
     networks:
       - redis
 
-      
   django:
     container_name: podscription_django
     restart: always
     build:
       context: .
       dockerfile: docker/django/Dockerfile
+      args: 
+       - BUILDKIT_INLINE_CACHE=1
     depends_on:
       - postgres
     environment:
@@ -102,8 +100,6 @@ services:
       - DJANGO_DEBUG=${DJANGO_DEBUG}
       - VITE_API_BASE_URI=${VITE_API_BASE_URI}
       - REDIS_URL=${DJANGO_REDIS_URL}
-    # env_file:
-      # - .env.development
     networks:
       - postgres
       - redis
@@ -126,8 +122,6 @@ services:
     networks:
       - postgres
     restart: unless-stopped
-    # env_file:
-    #   - .env
 
   pgadmin:
     container_name: pgadmin
@@ -144,10 +138,7 @@ services:
       - postgres
     depends_on:
       - postgres
-
     restart: unless-stopped
-    # env_file:
-    #   - .env
 
 networks:
   postgres:

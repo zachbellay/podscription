@@ -71,4 +71,3 @@ beautifulsoup4==4.11.1
 mutagen==1.46.0
 feedparser==6.0.10
 python-dotenv==0.21.0
-watchdog==2.2.1

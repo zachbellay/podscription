@@ -39,18 +39,17 @@ COMPOSE_PROFILES=worker make build && COMPOSE_PROFILES=worker make up
 - [ ] Create a way to add more than just one podcast at a time, ideally via the django admin site.
 - [ ] Split out webserver docker compose from celery worker docker compose 
 - [ ] Make it so that if you are entering info into a form the keyboard shortcuts don't work (i.e. spacebar doesn't pause podcast)
-- [ ] Reduce image sizes from ~7GB/image to a more reasonable size
-    - [/] Remove playwright from python + docker containers
-    - [/] Remove scrapy, billiard, airflow, etc
-    - [ ] Fix the requirements.txt to have actually relevant modules (lots of stale stuff)
-    - [ ] Remove wget, curl, gcc, g++, build-essentials from ending up in final image
-    - [ ] Do this for:
-        - [ ] flower
-        - [ ] whisper-worker
-        - [ ] rss-reader-worker
-        - [ ] django
+- [x] Reduce image sizes from ~7GB/image to a more reasonable size
+    - [x] Remove playwright from python + docker containers
+    - [x] Remove scrapy, billiard, airflow, etc
+    - [x] Fix the requirements.txt to have actually relevant modules (lots of stale stuff)
+    - [x] Remove wget, curl, gcc, g++, build-essentials from ending up in final image
+    - [x] Do this for:
+        - [x] flower
+        - [x] whisper-worker
+        - [x] rss-reader-worker
+        - [x] django
         - [ ] frontend
-    <!-- - [ ] Remove non-worker stuff from webserver docker-compose (flower, redis) -->
     
 
 ### Parking Lot:

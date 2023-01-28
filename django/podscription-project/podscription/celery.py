@@ -8,7 +8,7 @@ from celery import Celery
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "podscription.settings")
 app = Celery("podscription")
 app.config_from_object("django.conf:settings", namespace="CELERY")
-app.autodiscover_tasks(['podscription.tasks', 'api.tasks'])
+app.autodiscover_tasks(['api.task_queue', 'api.task_worker'])
 
 app.conf.result_chord_join_timeout = 900
 app.conf.result_chord_retry_interval = 5

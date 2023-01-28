@@ -11,11 +11,17 @@ services:
     extends:
       file: docker-compose.yml
       service: celery-worker
+    volumes:
+      - ./django:/usr/src/app/django
+      - ./docker:/usr/src/app/docker
 
   celery-whisper-worker:
     extends:
       file: docker-compose.yml
       service: celery-whisper-worker
+    volumes:
+      - ./django:/usr/src/app/django
+      - ./docker:/usr/src/app/docker
 
   redis:
     extends:
@@ -28,6 +34,7 @@ services:
       service: django
     volumes:
       - ./django:/usr/src/app/django
+      - ./docker:/usr/src/app/docker
     networks:
       - django
   
