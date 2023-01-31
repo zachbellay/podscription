@@ -31,8 +31,9 @@ const Header = () => {
                         className="mr-3 h-6 sm:h-9 dark:invert"
                         alt="Podscription Logo"
                     />
-                    <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
+                    <span className="relative self-center whitespace-nowrap text-xl font-semibold dark:text-white">
                         Podscription
+                        <span className="text-sm absolute -bottom-3 -right-3">Beta</span>
                     </span>
                 </Navbar.Brand>
             </Link>

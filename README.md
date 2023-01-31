@@ -39,7 +39,6 @@ COMPOSE_PROFILES=worker make build && COMPOSE_PROFILES=worker make up
 - [ ] Create a way to add more than just one podcast at a time, ideally via the django admin site.
 - [ ] Split out webserver docker compose from celery worker docker compose 
 - [ ] Make it so that if you are entering info into a form the keyboard shortcuts don't work (i.e. spacebar doesn't pause podcast)
-- [ ] Add "Beta" to the logo
 - [ ] Add a button for requesting new podcasts
 - [ ] Create a form for requesting new podcasts
 - [ ] Fix issue where podcast transcript and audio are not in sync (usually because of different versions of same podcast, so I basically want to figure out how to resolve to the same one every time)
@@ -81,5 +80,6 @@ COMPOSE_PROFILES=worker make build && COMPOSE_PROFILES=worker make up
         - [ ] frontend
 - [x] Order "All Podcasts" view podcast list (so that it is deterministic)
     - [x] Add hit counter so we can order by "popularity"
+- [x] Add "Beta" to the logo
 
 
