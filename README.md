@@ -39,24 +39,22 @@ COMPOSE_PROFILES=worker make build && COMPOSE_PROFILES=worker make up
 - [ ] Create a way to add more than just one podcast at a time, ideally via the django admin site.
 - [ ] Split out webserver docker compose from celery worker docker compose 
 - [ ] Make it so that if you are entering info into a form the keyboard shortcuts don't work (i.e. spacebar doesn't pause podcast)
-- [x] Reduce image sizes from ~7GB/image to a more reasonable size
-    - [x] Remove playwright from python + docker containers
-    - [x] Remove scrapy, billiard, airflow, etc
-    - [x] Fix the requirements.txt to have actually relevant modules (lots of stale stuff)
-    - [x] Remove wget, curl, gcc, g++, build-essentials from ending up in final image
-    - [x] Do this for:
-        - [x] flower
-        - [x] whisper-worker
-        - [x] rss-reader-worker
-        - [x] django
-        - [ ] frontend
-    
+- [ ] Add "Beta" to the logo
+- [ ] Add a button for requesting new podcasts
+- [ ] Create a form for requesting new podcasts
+- [ ] Fix issue where podcast transcript and audio are not in sync (usually because of different versions of same podcast, so I basically want to figure out how to resolve to the same one every time)
+
 
 ### Parking Lot:
 - [-] have all references to base url come from a config file that comes from an env file
     - Issue with Vite not picking up env variables
 - [-] fix search to include context prior to original word
     - can't figure this out, seems like it should be default behavior but docs on Django and Postgres don't provide much information
+- [ ] Multi node deployment
+    - [ ] Create workflow for building and pushing to docker hub 
+    - [ ] Create docker swarm with at least 2 VPS nodes 
+    - [ ] Adds labels to nodes in docker swarm, one for worker and other for webserver and db
+    - [ ] Create docker compose that uses docker hub images and uses labels to deploy to nodes
 
 ### Done:
 - [x] design search results page
@@ -69,5 +67,19 @@ COMPOSE_PROFILES=worker make build && COMPOSE_PROFILES=worker make up
 - [x] Give Makefile ability to discern between docker-compose and docker compose (the dash)
     - solved by upgrading docker version
 - [x] Fix server 500 error when using whitenoise in production
+    - (problem was that in index.html the static url was referring to /src/assets which only works in dev)
+- [x] Reduce image sizes from ~7GB/image to a more reasonable size
+    - [x] Remove playwright from python + docker containers
+    - [x] Remove scrapy, billiard, airflow, etc
+    - [x] Fix the requirements.txt to have actually relevant modules (lots of stale stuff)
+    - [x] Remove wget, curl, gcc, g++, build-essentials from ending up in final image
+    - [x] Do this for:
+        - [x] flower
+        - [x] whisper-worker
+        - [x] rss-reader-worker
+        - [x] django
+        - [ ] frontend
+- [x] Order "All Podcasts" view podcast list (so that it is deterministic)
+    - [x] Add hit counter so we can order by "popularity"
 
 

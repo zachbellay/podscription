@@ -82,7 +82,7 @@ services:
       - redis
 
   django:
-    container_name: podscription_django
+    container_name: podscription-django
     restart: always
     build:
       context: .

@@ -95,7 +95,7 @@ def search_podcasts(request, q: str):
     operation_id="list_podcasts",
 )
 def list_podcasts(request, page: int = 1):
-    podcasts = Podcast.objects.filter(active=True)
+    podcasts = Podcast.objects.filter(active=True).order_by("-hit_counter")
     paginator = Paginator(podcasts, 20)
     page_obj = paginator.get_page(page)
     return page_obj.object_list
@@ -118,8 +118,11 @@ def get_podcast(request, podcast_id: int):
     operation_id="get_podcast_by_slug",
 )
 def get_podcast_by_slug(request, podcast_slug: str):
-    return get_object_or_404(Podcast, slug=podcast_slug, active=True)
-
+    podcast = get_object_or_404(Podcast, slug=podcast_slug, active=True)
+    podcast.hit_counter += 1
+    podcast.save()
+    return podcast
+    
 
 @api.get(
     "/podcasts/{podcast_id}/episodes",

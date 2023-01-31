@@ -12,7 +12,7 @@ build:
 
 ifdef PROD
 up:
-	docker compose $(COMPOSE_FILES) up -d && docker network connect nginx-proxy-manager_default podscription_django
+	docker compose $(COMPOSE_FILES) up -d && docker network connect nginx-proxy-manager_default podscription-django
 else
 up:
 	docker compose $(COMPOSE_FILES) up -d

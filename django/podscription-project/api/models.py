@@ -18,6 +18,7 @@ class Podcast(models.Model):
     slug = models.SlugField(max_length=250, null=True, blank=True)
     active = models.BooleanField(default=True)
     is_rss = models.BooleanField(default=True)
+    hit_counter = models.PositiveIntegerField(default=0)
 
     class Meta:
         constraints = [
