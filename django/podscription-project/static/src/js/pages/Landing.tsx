@@ -3,12 +3,18 @@ import Header from '../components/headers/Header';
 import Hero from '../components/heros/Hero';
 import Search from '../components/search/Search';
 
-const Landing = () => {
+// setSearchSelectedCallback
+
+interface LandingProps {
+    setSearchSelectedCallback: (searchSelected: boolean) => void
+}
+
+const Landing = ({ setSearchSelectedCallback }: LandingProps) => {
     return (
         <div className="landing h-screen overflow-hidden">
             <Header />
             <Hero>
-                <Search placeholder="Search podcasts, episodes..." />
+                <Search placeholder="Search podcasts, episodes..." setSearchSelectedCallback={setSearchSelectedCallback} />
             </Hero>
         </div>
     );

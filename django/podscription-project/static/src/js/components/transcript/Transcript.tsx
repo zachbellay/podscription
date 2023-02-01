@@ -28,7 +28,6 @@ const Transcript: React.FC<TranscriptProps> = ({ podcastEpisode, updateAudioCall
 
     const timeLocationClickHandler = (timeLocation: number) => {
         updateAudioCallback(podcastEpisode.resolvedAudioUrl, timeLocation);
-        console.log(timeLocation);
     }
 
 

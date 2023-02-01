@@ -17,15 +17,16 @@ function App() {
   const [audioSource, setAudioSource] = React.useState<PlyrSource | null>(null);
 
   const [location, setLocation] = React.useState<number | null>(null);
+  const [searchSelected, setSearchSelected] = React.useState(false);
 
   // install event listener to pause if space bar is pressed
   React.useEffect(() => {
     const handleKeyPresses = (e: KeyboardEvent) => {
 
-
       const { current } = ref as React.MutableRefObject<APITypes>;
       const api = current as { plyr: PlyrInstance };
       if (!api) return;
+      if (searchSelected) return;
 
       if (e.code === "Space") {
         e.preventDefault();
@@ -84,7 +85,7 @@ function App() {
     return () => {
       window.removeEventListener("keydown", handleKeyPresses);
     }
-  }, [window])
+  }, [window, searchSelected])
 
 
   const updateAudioSourceCallback = (source: string, location?: number | null) => {
@@ -114,18 +115,10 @@ function App() {
         },
       ],
     })
-
-
-
   }
-
-
-
-
 
   return (
     <BrowserRouter>
-
       <div className="fixed inset-x-0 bottom-0 z-50" >
         {audioSource && (
           <AudioPlayer
@@ -136,9 +129,9 @@ function App() {
         )}
       </div>
       <Routes>
-        <Route path="/" element={<Landing />} />
+        <Route path="/" element={<Landing setSearchSelectedCallback={setSearchSelected} />} />
         <Route path="/about" element={<About />} />
-        <Route path="/search" element={<SearchResults updateAudioCallback={updateAudioSourceCallback} />} />
+        <Route path="/search" element={<SearchResults updateAudioCallback={updateAudioSourceCallback} setSearchSelectedCallback={setSearchSelected} />} />
         <Route path="/podcast/all" element={<PodcastAll />} />
         <Route path="/podcast/:podcastSlug" element={<SinglePodcast updateAudioCallback={updateAudioSourceCallback} />} />
         <Route path="/podcast/:podcastSlug/episode/:episodeSlug" element={<SingleEpisode updateAudioCallback={updateAudioSourceCallback} />} />

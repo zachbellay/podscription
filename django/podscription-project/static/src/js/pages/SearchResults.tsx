@@ -15,27 +15,20 @@ import PodcastItem from '../components/podcast-list/PodcastItem';
 
 import PodcastEpisodeSearchResultItem from '../components/search/PodcastEpisodeSearchResultItem';
 
-console.log(import.meta.env.MODE)
-console.log(import.meta.env.VITE_API_BASE_URI)
-console.log(getBaseUrl())
-
 // TODO : Make basePath come from env in vite config
 const api = new SearchApi(new Configuration({
-    // basePath: basePath,
     basePath: getBaseUrl(),
     headers: {
         'X-CSRFToken': Cookies.get('csrftoken')
     }
 }));
 
-// console.log('basePath', basePath);
-console.log('hello world')
-
 interface SearchResultsProps {
     updateAudioCallback: (source: string) => void
+    setSearchSelectedCallback: (searchSelected: boolean) => void
 }
 
-const SearchResults = ({ updateAudioCallback }: SearchResultsProps) => {
+const SearchResults = ({ updateAudioCallback, setSearchSelectedCallback }: SearchResultsProps) => {
 
     const location = useLocation();
     const query = new URLSearchParams(location.search).get('q') || '';
@@ -60,7 +53,10 @@ const SearchResults = ({ updateAudioCallback }: SearchResultsProps) => {
             <div className="container min-w-full pb-12 sm:px-24 min-h-full dark:bg-slate-800">
 
                 <div className="mx-4 sm:mx-0">
-                    <Search query={query} />
+                    <Search
+                        query={query}
+                        setSearchSelectedCallback={setSearchSelectedCallback}
+                    />
                 </div>
                 <div className="my-10"></div>
 
