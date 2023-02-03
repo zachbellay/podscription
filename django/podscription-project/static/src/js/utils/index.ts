@@ -18,8 +18,9 @@ function formatSeconds(seconds) {
 }
 
 function getBaseUrl() {
-    const baseUrl = import.meta.env.MODE === 'development' ? 'http://localhost:8888' : 'https://podscription.app';
-    return baseUrl;
+    // const baseUrl = import.meta.env.MODE === 'development' ? 'http://localhost:8888' : 'https://podscription.app';
+    // return baseUrl;
+    return 'http://localhost:8888';
 }
 
 export { formatDate, formatSeconds, getBaseUrl };

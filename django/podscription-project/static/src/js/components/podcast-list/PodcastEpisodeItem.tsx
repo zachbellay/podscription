@@ -6,7 +6,6 @@ import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC'
 import { PodcastEpisodeLightOut, PodcastOut } from '../../adapters/models';
 import { Link } from 'react-router-dom';
 import { formatDate, formatSeconds } from '../../utils';
-// import sanitizeHtml from 'sanitize-html';
 import { convert } from 'html-to-text';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis)

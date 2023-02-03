@@ -1,5 +1,7 @@
+import bleach
 import feedparser
 from api.models import Podcast
+from api.utils import clean_description
 
 from django.core.management.base import BaseCommand, CommandError
 
@@ -22,7 +24,7 @@ class Command(BaseCommand):
             author=feed.feed.author,
             url=rss_url,
             logo_url=feed.feed.image.href if "image" in feed.feed else "",
-            description=feed.feed.description,
+            description=clean_description(feed.feed.description),
             website_url=feed.feed.link,
             is_rss=True,
         )

@@ -10,7 +10,7 @@ from podscription.celery import app
 
 from django.db import IntegrityError
 
-from .utils import duration_to_seconds, group_text_by_time_window
+from .utils import clean_description, duration_to_seconds, group_text_by_time_window
 
 model = None
 model_size = "base"
@@ -132,12 +132,14 @@ def read_rss_feed(podcast_id: str):
             logger.error(f"Too many redirects: {audio_url}")
             continue
 
+        
+
         episode = PodcastEpisode(
             podcast=podcast,
             podcast_name=podcast.name,
             date=dateparser.parse(entry.published),
             title=entry.title,
-            description=entry.description,
+            description=clean_description(entry.description),
             audio_url=audio_url,
             resolved_audio_url=resolved_request.url,
             details_url=audio_url,

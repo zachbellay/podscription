@@ -1,6 +1,9 @@
 import random
+import re
 import string
 from datetime import datetime, timedelta
+
+import bleach
 
 from django.utils.text import slugify
 
@@ -134,3 +137,15 @@ def duration_to_seconds(duration_str):
         duration_in_seconds = duration.total_seconds()
 
     return duration_in_seconds
+
+def clean_description(text: str)->str:
+    # remove urls that are inside [], e.g. [https://www.example.com]
+    text = re.sub(r'\[https?://[^\]]+\]', '', text)
+
+    # linkify naked urls
+    text = bleach.linkify(text)
+
+    # remove unsafe tags
+    text = bleach.clean(text, tags=list(bleach.sanitizer.ALLOWED_TAGS)+['p'], strip=True)
+
+    return text

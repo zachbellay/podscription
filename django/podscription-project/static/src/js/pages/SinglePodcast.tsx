@@ -16,6 +16,8 @@ import Loader from '../components/loader/Loader';
 import EndMessage from '../components/end-message/EndMessage';
 import { getBaseUrl } from '../utils';
 
+import styled, { css } from "styled-components";
+
 // TODO : Make basePath come from env in vite config
 const podcastsApi = new PodcastsApi(new Configuration({
     basePath: getBaseUrl(),
@@ -133,7 +135,7 @@ const SinglePodcast: React.FC<SinglePodcastProps> = ({ updateAudioCallback }) =>
 
                             </div>
 
-                            <p className="dark:text-gray-300">{podcast.description}</p>
+                            <p className="dark:text-gray-300" dangerouslySetInnerHTML={{ __html: podcast.description }} />
 
                         </div>
                     </div>

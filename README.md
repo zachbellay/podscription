@@ -41,6 +41,10 @@ COMPOSE_PROFILES=worker make build && COMPOSE_PROFILES=worker make up
 - [ ] Fix issue where podcast transcript and audio are not in sync (usually because of different versions of same podcast, so I basically want to figure out how to resolve to the same one every time)
 - [ ] Add a button for requesting new podcasts
 - [ ] Create a form for requesting new podcasts
+- [x] Fix podcast descriptions having html/markup which ends up being displayed on the page
+    - [ ] Write script to clean up existing descriptions in prod db
+- [ ] Fix title getting messed up after navving to another page
+- [ ] Fix transcription schefuling and make sure trannscription is queued after scraping 
 
 
 ### Parking Lot:

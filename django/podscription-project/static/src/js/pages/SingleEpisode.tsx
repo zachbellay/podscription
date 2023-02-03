@@ -13,7 +13,6 @@ import { HiPlay } from 'react-icons/hi';
 import { formatDate } from '../utils';
 import Transcript from '../components/transcript/Transcript';
 import { getBaseUrl } from '../utils';
-import { convert } from 'html-to-text';
 
 // TODO : Make basePath come from env in vite config
 const podcastsApi = new PodcastsApi(new Configuration({
@@ -98,7 +97,7 @@ const SingleEpisode: React.FC<SingleEpisodeProps> = ({ updateAudioCallback }) =>
 
                             <p className="font-light text-sm text-gray-800 dark:text-gray-400">{formatDate(podcastEpisode.date)} | {Math.floor(podcastEpisode.duration / 60)}m {podcastEpisode.duration % 60}s</p>
 
-                            <p className="dark:text-gray-300">{convert(podcastEpisode.description)}</p>
+                            <p className="dark:text-gray-300" dangerouslySetInnerHTML={{ __html: podcastEpisode.description }} />
 
                             <Button onClick={() => updateAudioCallback(podcastEpisode.resolvedAudioUrl)} size="xs" outline={true} color='gray'
                                 pill={true} className="mr-2 my-1">
