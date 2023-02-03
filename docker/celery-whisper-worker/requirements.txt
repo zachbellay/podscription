@@ -75,3 +75,4 @@ mutagen==1.46.0
 feedparser==6.0.10
 python-dotenv==0.21.0
 watchdog==2.2.1
+bleach==6.0.0
