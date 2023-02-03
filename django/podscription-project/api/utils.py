@@ -125,16 +125,10 @@ def duration_to_seconds(duration_str):
         # Try to parse the duration string as an integer
         duration_in_seconds = int(duration_str)
     except ValueError:
-        # If the duration string is not an integer, parse it as a time
-        duration = datetime.strptime(duration_str, "%H:%M:%S")
-
-        # Convert the duration to a timedelta object
-        duration = timedelta(
-            hours=duration.hour, minutes=duration.minute, seconds=duration.second
-        )
-
-        # Extract the total number of seconds from the timedelta object
-        duration_in_seconds = duration.total_seconds()
+        # def to_seconds(timestr):
+        duration_in_seconds= 0
+        for part in duration_str.split(':'):
+            duration_in_seconds= duration_in_seconds*60 + int(part, 10)
 
     return duration_in_seconds
 
