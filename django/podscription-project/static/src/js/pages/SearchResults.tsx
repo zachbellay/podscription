@@ -36,14 +36,33 @@ const SearchResults = ({ updateAudioCallback, setSearchSelectedCallback }: Searc
     const [podcasts, setPodcasts] = React.useState<PodcastOut[]>([]);
     const [episodes, setEpisodes] = React.useState<PodcastEpisodeSearchResultOut[]>([]);
 
+    // React.useEffect(() => {
+    //     api.searchEpisodes({ q: query }).then((response) => {
+    //         setEpisodes(response);
+    //     });
+    //     api.searchPodcasts({ q: query }).then((response) => {
+    //         setPodcasts(response);
+    //     });
+    // }, [query]);
+
+    // rewrite the above to add a loading state
+    const [loading, setLoading] = React.useState<boolean>(true);
     React.useEffect(() => {
+        setLoading(true);
         api.searchEpisodes({ q: query }).then((response) => {
             setEpisodes(response);
+            setLoading(false);
         });
         api.searchPodcasts({ q: query }).then((response) => {
             setPodcasts(response);
+            setLoading(false);
         });
     }, [query]);
+
+
+
+
+
 
 
     return (
@@ -60,8 +79,15 @@ const SearchResults = ({ updateAudioCallback, setSearchSelectedCallback }: Searc
                 </div>
                 <div className="my-10"></div>
 
+                {loading &&
+                    <div className="flex flex-col justify-center items-center">
+                        <h1 className="text-2xl font-semibold text-left dark:text-white mb-2 mx-4 sm:mx-0">
+                            Loading...
+                        </h1>
+                    </div>
+                }
 
-                {podcasts && podcasts.length > 0 &&
+                {!loading && podcasts && podcasts.length > 0 &&
                     <div className="mb-14">
                         <h1 className="text-2xl font-semibold text-left dark:text-white mb-2 mx-4 sm:mx-0">Top Podcast Results</h1>
 
@@ -75,7 +101,7 @@ const SearchResults = ({ updateAudioCallback, setSearchSelectedCallback }: Searc
                     </div>
                 }
 
-                {episodes && episodes.length > 0 &&
+                {!loading && episodes && episodes.length > 0 &&
                     <div>
                         <h1 className="text-2xl font-semibold text-left dark:text-white mb-2 mx-4 sm:mx-0">Top Episode Results</h1>
                         <div>
@@ -94,7 +120,7 @@ const SearchResults = ({ updateAudioCallback, setSearchSelectedCallback }: Searc
                     </div>
                 }
 
-                {podcasts.length === 0 && episodes.length === 0 &&
+                {!loading && podcasts.length === 0 && episodes.length === 0 &&
                     <div className="flex flex-col justify-center items-center">
                         <h1 className="text-2xl font-semibold text-left dark:text-white mb-2 mx-4 sm:mx-0">
                             No Results Found
