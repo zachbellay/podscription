@@ -1,6 +1,7 @@
 import logging
 
 from api.models import Podcast, PodcastEpisode
+from celery.schedules import crontab
 from podscription.celery import app
 
 logger = logging.getLogger(__name__)
@@ -11,12 +12,12 @@ def setup_periodic_tasks(sender, **kwargs):
 
     print("Setting up periodic tasks...")
 
-    # sender.add_periodic_task(
-    #     3600 * 4, queue_untranscribed_podcast_episodes, name="Schedule transcription"
-    # )
+    sender.add_periodic_task(
+        3600 * 4, queue_untranscribed_podcast_episodes, name="Schedule transcription"
+    )
 
     sender.add_periodic_task(
-        3600 * 4, read_all_rss_feeds, name="Schedule RSS feed reading"
+        3600, read_all_rss_feeds, name="Schedule RSS feed reading"
     )
 
 

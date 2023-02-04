@@ -148,7 +148,8 @@ def read_rss_feed(podcast_id: str):
 
         try:
             episode.save()
-            logger.info(f"Added episode: {podcast.name}-{episode.title}")
+            logger.info(f"Added and queued for transcription: {podcast.name}-{episode.title}")
+            transcribe_podcast_episode.delay(episode.id)
         except IntegrityError:
             logger.info(f"Episode already exists: {podcast.name}-{episode.title}")
         except Exception as e:

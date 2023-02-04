@@ -10,9 +10,8 @@ import { PodcastEpisodeOut } from '../adapters/models';
 import { Link } from 'react-router-dom';
 import { Button } from 'flowbite-react/lib/cjs/components/Button';
 import { HiPlay } from 'react-icons/hi';
-import { formatDate } from '../utils';
 import Transcript from '../components/transcript/Transcript';
-import { getBaseUrl } from '../utils';
+import { getBaseUrl, formatSeconds, formatDate } from '../utils';
 
 // TODO : Make basePath come from env in vite config
 const podcastsApi = new PodcastsApi(new Configuration({
@@ -95,7 +94,7 @@ const SingleEpisode: React.FC<SingleEpisodeProps> = ({ updateAudioCallback }) =>
 
                             <h1 className="text-3xl font-semibold dark:text-white">{podcastEpisode.title}</h1>
 
-                            <p className="font-light text-sm text-gray-800 dark:text-gray-400">{formatDate(podcastEpisode.date)} | {Math.floor(podcastEpisode.duration / 60)}m {podcastEpisode.duration % 60}s</p>
+                            <p className="font-light text-sm text-gray-800 dark:text-gray-400">{formatDate(podcastEpisode.date)} | {formatSeconds(podcastEpisode.duration)}</p>
 
                             <p className="dark:text-gray-300" dangerouslySetInnerHTML={{ __html: podcastEpisode.description }} />
 

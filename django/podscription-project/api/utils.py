@@ -125,7 +125,6 @@ def duration_to_seconds(duration_str):
         # Try to parse the duration string as an integer
         duration_in_seconds = int(duration_str)
     except ValueError:
-        # def to_seconds(timestr):
         duration_in_seconds= 0
         for part in duration_str.split(':'):
             duration_in_seconds= duration_in_seconds*60 + int(part, 10)
