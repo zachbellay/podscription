@@ -126,7 +126,7 @@ export function PodcastEpisodeLightOutToJSON(value?: PodcastEpisodeLightOut | nu
         
         'id': value.id,
         'podcast_name': value.podcastName,
-        'date': (value.date.toISOString().substr(0,10)),
+        'date': (value.date.toISOString()),
         'title': value.title,
         'description': value.description,
         'resolved_audio_url': value.resolvedAudioUrl,

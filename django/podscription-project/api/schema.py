@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import datetime
 from typing import Dict, List, Optional
 
 from ninja import Schema
@@ -18,7 +18,7 @@ class PodcastOut(Schema):
 class PodcastEpisodeOut(Schema):
     id: int
     podcast_name: str
-    date: date
+    date: datetime
     title: str
     description: str
     resolved_audio_url: str
@@ -31,7 +31,7 @@ class PodcastEpisodeOut(Schema):
 class PodcastEpisodeLightOut(Schema):
     id: int
     podcast_name: str
-    date: date
+    date: datetime
     title: str
     description: str
     resolved_audio_url: str
@@ -44,7 +44,7 @@ class PodcastEpisodeSearchResultOut(Schema):
     id: int
     podcast_name: str
     podcast: PodcastOut
-    date: date
+    date: datetime
     title: str
     description: str
     resolved_audio_url: str

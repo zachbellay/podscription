@@ -150,7 +150,7 @@ export function PodcastEpisodeSearchResultOutToJSON(value?: PodcastEpisodeSearch
         'id': value.id,
         'podcast_name': value.podcastName,
         'podcast': PodcastOutToJSON(value.podcast),
-        'date': (value.date.toISOString().substr(0,10)),
+        'date': (value.date.toISOString()),
         'title': value.title,
         'description': value.description,
         'resolved_audio_url': value.resolvedAudioUrl,

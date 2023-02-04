@@ -42,7 +42,6 @@ COMPOSE_PROFILES=worker make build && COMPOSE_PROFILES=worker make up
 - [ ] Fix title getting messed up after navving to another page
 - [ ] Make a show more button for the podcast description
 
-
 ### Parking Lot:
 - [-] have all references to base url come from a config file that comes from an env file
     - Issue with Vite not picking up env variables
@@ -87,5 +86,7 @@ COMPOSE_PROFILES=worker make build && COMPOSE_PROFILES=worker make up
     - [x] Write script to clean up existing descriptions in prod db (sanitize-text command)
 - [x] Fix transcription schefuling and make sure trannscription is queued after scraping 
 - [x] Fix timestamps being effed up after the 1 hour mark (seems like the modulo math is incorrect)
+- [x] Fix day of week being a day off
+    - (this was fixed by making the timestamps timezone aware)
 
 
