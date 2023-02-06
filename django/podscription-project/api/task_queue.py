@@ -20,7 +20,6 @@ def setup_periodic_tasks(sender, **kwargs):
         3600, read_all_rss_feeds, name="Schedule RSS feed reading"
     )
 
-
 @app.task(queue="transcription_worker")
 def queue_untranscribed_podcast_episodes():
     eps = PodcastEpisode.objects.filter(transcription=None)
@@ -28,7 +27,7 @@ def queue_untranscribed_podcast_episodes():
         app.send_task("api.task_worker.transcribe_podcast_episode", args=[ep.id])
 
 
-@app.task(queue="rss_worker")
+@app.task
 def read_all_rss_feeds():
     all_podcasts = Podcast.objects.filter(is_rss=True)
 

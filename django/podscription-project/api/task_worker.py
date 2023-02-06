@@ -72,7 +72,7 @@ def transcribe_podcast_episode(podcast_episode_id: str):
     podcast_episode.save()
 
 
-@app.task(queue="rss_worker")
+@app.task
 def group_podcast_episode_transcript(podcast_episode_id: str):
 
     podcast_episode = PodcastEpisode.objects.get(id=podcast_episode_id)
@@ -88,7 +88,7 @@ def group_podcast_episode_transcript(podcast_episode_id: str):
     podcast_episode.save()
 
 
-@app.task(queue="rss_worker")
+@app.task
 def read_rss_feed(podcast_id: str):
 
     headers = {
