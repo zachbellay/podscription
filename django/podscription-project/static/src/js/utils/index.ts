@@ -18,7 +18,7 @@ function formatSeconds(seconds) {
 }
 
 function getBaseUrl() {
-    const baseUrl = import.meta.env.MODE === 'development' ? 'http://localhost:8888' : 'https://podscription.app';
+    const baseUrl = import.meta.env.MODE === 'development' ? 'http://localhost:8889' : 'https://podscription.app';
     return baseUrl;
 }
 
