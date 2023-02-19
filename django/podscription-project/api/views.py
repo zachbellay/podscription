@@ -8,7 +8,7 @@ from api.schema import (
     PodcastEpisodeSearchResultOut,
     PodcastOut,
 )
-from ninja import NinjaAPI
+from ninja import NinjaAPI, Router
 from ninja.errors import HttpError
 
 # check if django debug is true
@@ -26,13 +26,15 @@ from django.db.models import F, Value
 from django.http import Http404
 from django.shortcuts import get_object_or_404, render
 
-if settings.DEBUG:
-    api = NinjaAPI()
-else:
-    api = NinjaAPI(openapi_url=None)
+# if settings.DEBUG:
+#     api = NinjaAPI()
+# else:
+#     api = NinjaAPI(openapi_url=None)
+
+router = Router()
 
 
-@api.get(
+@router.get(
     "/search/podcasts",
     response=List[PodcastOut],
     tags=["search"],
@@ -65,7 +67,7 @@ def search_podcasts(request, q: str):
     return podcast_results
 
 
-@api.get(
+@router.get(
     "/search/episodes",
     response=List[PodcastEpisodeSearchResultOut],
     tags=["search"],
@@ -88,7 +90,7 @@ def search_podcasts(request, q: str):
     return podcast_episode_results
 
 
-@api.get(
+@router.get(
     "/podcasts",
     response=List[PodcastOut],
     tags=["podcasts"],
@@ -101,7 +103,7 @@ def list_podcasts(request, page: int = 1):
     return page_obj.object_list
 
 
-@api.get(
+@router.get(
     "/podcasts/id/{podcast_id}",
     response=PodcastOut,
     tags=["podcasts"],
@@ -111,7 +113,7 @@ def get_podcast(request, podcast_id: int):
     return get_object_or_404(Podcast, id=podcast_id, active=True)
 
 
-@api.get(
+@router.get(
     "/podcasts/slug/{podcast_slug}",
     response=PodcastOut,
     tags=["podcasts"],
@@ -124,7 +126,7 @@ def get_podcast_by_slug(request, podcast_slug: str):
     return podcast
     
 
-@api.get(
+@router.get(
     "/podcasts/{podcast_id}/episodes",
     response=List[PodcastEpisodeLightOut],
     tags=["podcast_episodes"],
@@ -145,7 +147,7 @@ def list_podcast_episodes(request, podcast_id: int, page: int = 1):
     return page_obj.object_list
 
 
-@api.get(
+@router.get(
     "/podcasts/{podcast_slug}/episodes/{episode_slug}",
     response=PodcastEpisodeOut,
     tags=["podcast_episodes"],

@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Landing from './pages/Landing';
 import SearchResults from './pages/SearchResults';
 import SinglePodcast from './pages/SinglePodcast';
@@ -135,6 +135,7 @@ function App() {
         <Route path="/podcast/all" element={<PodcastAll />} />
         <Route path="/podcast/:podcastSlug" element={<SinglePodcast updateAudioCallback={updateAudioSourceCallback} />} />
         <Route path="/podcast/:podcastSlug/episode/:episodeSlug" element={<SingleEpisode updateAudioCallback={updateAudioSourceCallback} />} />
+        <Route path="/admin" element={<Navigate to="/admin"/>} />
         <Route path="*" element={<NotFound />} />
       </Routes>
 
